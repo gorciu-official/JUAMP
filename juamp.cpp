@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include <termios.h>
 #include <fcntl.h>
+#define Sleep(ms) sleep((ms) / 1000)
 #endif
 
 using namespace std;
@@ -89,7 +90,7 @@ int print_message_box(const string& title, const string& desc) {
 #endif
 }
 
-string read(const string prefix, int rfg = 7, int rbg = 0) {
+void add_one_hunger() {
     hunger++;
     if (hunger == 75) {
         print_message_box("Uwaga!", "Jesteś głodny! Może czas pójść na halę targową i kupić coś do jedzenia.");
@@ -103,6 +104,10 @@ string read(const string prefix, int rfg = 7, int rbg = 0) {
             continue;
         }
     }
+}
+
+string read(const string prefix, int rfg = 7, int rbg = 0) {
+    add_one_hunger();
 
     int cfg = current_foreground;
     int cbg = current_background;
@@ -239,9 +244,8 @@ void handle_market_hall() {
         if (readed == "1") {
             if (item_price > money) {
                 set_console_color(4, 0);
-                println("Niestety nie stać cię na taki wydatek!");
+                println("Nie stać cię na taki wydatek, ale wolisz się zadłużyć.");
                 set_console_color(7, 0);
-                continue;
             }
             remove_money(item_price);
             hunger -= item_points;
@@ -255,6 +259,46 @@ void handle_market_hall() {
             break;
         }
     }
+}
+
+void handle_casino() {
+    set_console_color(7, 0);
+    println("<Ochrona> Siema mordko! Witaj w tym kasynowskim świecie!");
+    
+    while (true) {
+        println("<Miły pan> Co tam chcesz obstawiać? Czerwone (R) czy czarne (B), a może wyjść chcesz (E)?");
+        string response = read("# ");
+        
+        if (response[0] == 'E' || response[0] == 'e') {
+            println("<Miły pan> Żegnam Cię, szczęścia w przyszłości!");
+            break;
+        }
+        
+        println("Obstawiasz 250$.");
+        int random_num = get_random_int_to_percent() % 2;
+        
+        if ((response[0] == 'R' || response[0] == 'r') && random_num == 0) {
+            println("Wygrałeś! Czerwone trafiło!");
+            add_money(250);
+        } else if ((response[0] == 'B' || response[0] == 'b') && random_num == 1) {
+            println("Wygrałeś! Czarne trafiło!");
+            add_money(250);
+        } else {
+            println("Przegrałeś. Spróbuj jeszcze raz.");
+            remove_money(250);
+        }
+    }
+}
+
+void handle_work() {
+    set_console_color(7, 0);
+    println("<Szef> Witam! Popracujesz se dzisiaj mocno!");
+    for (size_t i = 0; i < 30; i++)
+    {
+        add_one_hunger();
+        Sleep(500);
+    }
+    println("<Szef> No, wystarczy! Możesz iść!");
 }
 
 void handle_outside() {
@@ -273,6 +317,7 @@ void handle_outside() {
         println("  1 - Wróć do domu");
         println("  2 - Odwiedź mały sklepik \"Ropucha\"");
         println("  3 - Idź na halę targową");
+        println("  4 - Idź do kasyna");
 
         string readed = read("> ", 2);
         if (readed == "1") {
@@ -282,6 +327,9 @@ void handle_outside() {
             continue;
         } else if (readed == "3") {
             handle_market_hall();
+            continue;
+        } else if (readed == "4") {
+            handle_casino();
             continue;
         }
 
@@ -401,6 +449,15 @@ void handle_home_talking() {
 void handle_home() {
     while (true) {
         printnl();
+
+        if (money < 0) {
+            set_console_color(7, 0);
+            println("<Mama> JAK ŚMIAŁEŚ SIĘ ZADŁUŻYĆ??? Wolę zero złotych niż tyle ile masz!");
+            println("       Przynosisz wstyd naszej rodzinie. Wynocha do pracy!");
+            handle_work();
+            continue;
+        }
+
         set_console_color(3, 0);
         println("Jesteś w domu!");
         set_console_color(7, 0);
