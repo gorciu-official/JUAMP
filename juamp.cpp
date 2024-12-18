@@ -1,15 +1,22 @@
 /* ================================ INCLUDES ================================ */
 
 #include <iostream>
-#include <windows.h>
-#include <winuser.h>
 #include <random>
 #include <string>
 #include <fstream>
 
-using namespace std;
+#ifdef _WIN32
+#include <windows.h>
+#include <winuser.h>
+#endif
 
-/* ================================ VERSION ================================ */
+#ifdef __linux__
+#include <unistd.h>
+#include <termios.h>
+#include <fcntl.h>
+#endif
+
+using namespace std;
 
 #define JUAMP_VERSION "1.0.0"
 
@@ -35,14 +42,22 @@ int current_background;
 int get_random_int_to_percent() {
     random_device rd;
     mt19937 gen(rd());
-    uniform_int_distribution<> dist(1, 10); 
+
+    uniform_int_distribution<> dist(1, 10);
 
     return dist(gen);
 }
 
 void set_console_color(int foreground, int background) {
+#ifdef _WIN32
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleTextAttribute(hConsole, (background << 4) | foreground);
+#endif
+#ifdef __linux__
+    string fg = to_string(foreground);
+    string bg = to_string(background);
+    cout << "\033[" << fg << ";" << bg << "m";
+#endif
     current_background = background;
     current_foreground = foreground;
 }
@@ -59,27 +74,31 @@ void printnl() {
     cout << endl;
 }
 
-int print_message_box(LPCWSTR title, LPCWSTR desc) {
-    int msgboxID = MessageBoxW(
+int print_message_box(const string& title, const string& desc) {
+#ifdef _WIN32
+    int msgboxID = MessageBoxA(
         NULL,
-        desc,
-        title,
+        desc.c_str(),
+        title.c_str(),
         MB_ICONINFORMATION | MB_OK | MB_DEFBUTTON2
     );
-
     return msgboxID;
+#else
+    cout << title << ": " << desc << endl;
+    return 0;
+#endif
 }
 
 string read(const string prefix, int rfg = 7, int rbg = 0) {
     hunger++;
     if (hunger == 75) {
-        print_message_box((LPCWSTR)L"Uwaga!", (LPCWSTR)L"Jesteś głodny! Może czas pójść na halę targową i kupić coś do jedzenia.");
+        print_message_box("Uwaga!", "Jesteś głodny! Może czas pójść na halę targową i kupić coś do jedzenia.");
     }
     if (hunger == 90) {
-        print_message_box((LPCWSTR)L"OSTATNIE OSTRZEŻENIE!", (LPCWSTR)L"Jesteś naprawdę głodny. Musisz kupić coś do jedzenia. Jeżeli nie zareagujesz na to ostrzeżenie, Twoja rozgrywka może się bezpowrotnie skończyć.");
+        print_message_box("OSTATNIE OSTRZEŻENIE!", "Jesteś naprawdę głodny. Musisz kupić coś do jedzenia. Jeżeli nie zareagujesz na to ostrzeżenie, Twoja rozgrywka może się bezpowrotnie skończyć.");
     }
     if (hunger > 115) {
-        print_message_box((LPCWSTR)L"Rozgrywka zakończona!", (LPCWSTR)L"Zignorowałeś ostrzeżenia dotyczące głodu twojej postaci. Nie jesteś w stanie kontynuować rozgrywki.");
+        print_message_box("Rozgrywka zakończona!", "Zignorowałeś ostrzeżenia dotyczące głodu twojej postaci. Nie jesteś w stanie kontynuować rozgrywki.");
         while (true) {
             continue;
         }
