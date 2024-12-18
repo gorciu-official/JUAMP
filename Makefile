@@ -1,4 +1,4 @@
-.PHONY: all run
+.PHONY: all run clean
 
 ifeq ($(OS), Linux)
     CXX = g++
@@ -10,8 +10,21 @@ else
     FLAGS = -static
 endif
 
-all:
-	$(CXX) $(FLAGS) juamp.cpp -o juamp$(EXE_SUFFIX)
+SRC_DIR = src
+SRC_FILES = $(wildcard $(SRC_DIR)/*.cpp)
+OBJ_FILES = $(SRC_FILES:.cpp=.o)
+TARGET = juamp$(EXE_SUFFIX)
 
-run:
-	./juamp$(EXE_SUFFIX)
+all: $(TARGET)
+
+$(TARGET): $(OBJ_FILES)
+	$(CXX) $(FLAGS) $^ -o $@
+
+$(SRC_DIR)/%.o: $(SRC_DIR)/%.cpp
+	$(CXX) $(FLAGS) -c $< -o $@
+
+run: $(TARGET)
+	./$(TARGET)
+
+clean:
+	rm -f $(SRC_DIR)/*.o $(TARGET)
