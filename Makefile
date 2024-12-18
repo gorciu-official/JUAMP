@@ -1,7 +1,17 @@
-.PHONY = all run
+.PHONY: all run
+
+ifeq ($(OS), Linux)
+    CXX = g++
+    EXE_SUFFIX = .bin
+    FLAGS = -static
+else
+    CXX = g++
+    EXE_SUFFIX = .exe
+    FLAGS = -static
+endif
 
 all:
-	g++ --static juamp.cpp -o juamp.exe 
+	$(CXX) $(FLAGS) juamp.cpp -o juamp$(EXE_SUFFIX)
 
 run:
-	./juamp.exe
+	./juamp$(EXE_SUFFIX)
