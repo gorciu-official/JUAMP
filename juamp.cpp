@@ -10,7 +10,7 @@ using namespace std;
 
 /* ================================ VERSION ================================ */
 
-#define JUAMP_VERSION "1.0.0 (beta 6)"
+#define JUAMP_VERSION "1.0.0 (beta 7)"
 
 /* ================================ FAMILY ================================ */
 
@@ -98,7 +98,7 @@ string read(const string prefix, int rfg = 7, int rbg = 0) {
 
 /* ================================ MONEY ================================ */
 
-void add_money(int money2) {
+void add_money(double money2) {
     money = money + money2;
     int cfg = current_foreground;
     int cbg = current_background;
@@ -111,7 +111,7 @@ void add_money(int money2) {
     set_console_color(cfg, cbg);
 }
 
-void remove_money(int money2) {
+void remove_money(double money2) {
     money = money - money2;
     int cfg = current_foreground;
     int cbg = current_background;
@@ -161,6 +161,67 @@ void handle_ropucha() {
     }
 }
 
+#define MARKET_HALL_BAGIETKA_CENA 4.50
+#define MARKET_HALL_BAGIETKA_PUNKTY 22
+#define MARKET_HALL_JABLKO_CENA 2.00
+#define MARKET_HALL_JABLKO_PUNKTY 5
+#define MARKET_HALL_WODA_CENA 1.50
+#define MARKET_HALL_WODA_PUNKTY 6
+
+void handle_market_hall() {
+    while (true) {
+        int random_item = get_random_int_to_percent() % 3 + 1;
+        string item_name;
+        double item_price;
+        int item_points;
+
+        if (random_item == 1) {
+            item_name = "Bagietka";
+            item_price = MARKET_HALL_BAGIETKA_CENA;
+            item_points = MARKET_HALL_BAGIETKA_PUNKTY;
+        } else if (random_item == 2) {
+            item_name = "Jabłko";
+            item_price = MARKET_HALL_JABLKO_CENA;
+            item_points = MARKET_HALL_JABLKO_PUNKTY;
+        } else {
+            item_name = "Woda";
+            item_price = MARKET_HALL_WODA_CENA;
+            item_points = MARKET_HALL_WODA_PUNKTY;
+        }
+
+        set_console_color(0x0D, 0);
+        println("Nowa oferta");
+        set_console_color(6, 0);
+        println(item_name);
+        set_console_color(7, 0);
+        printf("Cena: %.2f\n", item_price);
+        printf("Punkty najedzenia: %d punktów\n", item_points);
+        println("  1 - Kup");
+        println("  2 - Odrzuć");
+        println("  3 - Wyjdź");
+
+        string readed = read("> ", 2);
+        if (readed == "1") {
+            if (item_price > money) {
+                set_console_color(4, 0);
+                println("Niestety nie stać cię na taki wydatek!");
+                set_console_color(7, 0);
+                continue;
+            }
+            remove_money(item_price);
+            hunger -= item_points;
+            set_console_color(2, 0);
+            println("Zakupiono pomyślnie!");
+            set_console_color(7, 0);
+            continue;
+        } else if (readed == "2") {
+            continue;
+        } else if (readed == "3") {
+            break;
+        }
+    }
+}
+
 void handle_outside() {
     if (!was_outside_before) {
         printnl();
@@ -176,12 +237,16 @@ void handle_outside() {
         set_console_color(7, 0);
         println("  1 - Wróć do domu");
         println("  2 - Odwiedź mały sklepik \"Ropucha\"");
+        println("  3 - Idź na halę targową");
 
         string readed = read("> ", 2);
         if (readed == "1") {
             return;
         } else if (readed == "2") {
             handle_ropucha();
+            continue;
+        } else if (readed == "3") {
+            handle_market_hall();
             continue;
         }
 
