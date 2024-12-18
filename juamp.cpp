@@ -5,12 +5,13 @@
 #include <winuser.h>
 #include <random>
 #include <string>
+#include <fstream>
 
 using namespace std;
 
 /* ================================ VERSION ================================ */
 
-#define JUAMP_VERSION "1.0.0 (beta 7)"
+#define JUAMP_VERSION "1.0.0"
 
 /* ================================ FAMILY ================================ */
 
@@ -22,6 +23,9 @@ string last_talked_with = "Mama";
 int mum_tokens = 0;
 int hunger = 0;
 int money = 1000;
+string name = "";
+string city = "";
+int age = 12;
 
 /* ================================ INTERNALS ================================ */
 
@@ -165,12 +169,16 @@ void handle_ropucha() {
 #define MARKET_HALL_BAGIETKA_PUNKTY 22
 #define MARKET_HALL_JABLKO_CENA 2.00
 #define MARKET_HALL_JABLKO_PUNKTY 5
+#define MARKET_HALL_GRUSZKA_CENA 2.00
+#define MARKET_HALL_GRUSZKA_PUNKTY 5
+#define MARKET_HALL_BANAN_CENA 2.00
+#define MARKET_HALL_BANAN_PUNKTY 7
 #define MARKET_HALL_WODA_CENA 1.50
 #define MARKET_HALL_WODA_PUNKTY 6
 
 void handle_market_hall() {
     while (true) {
-        int random_item = get_random_int_to_percent() % 3 + 1;
+        int random_item = get_random_int_to_percent() % 5 + 1;
         string item_name;
         double item_price;
         int item_points;
@@ -183,6 +191,14 @@ void handle_market_hall() {
             item_name = "Jabłko";
             item_price = MARKET_HALL_JABLKO_CENA;
             item_points = MARKET_HALL_JABLKO_PUNKTY;
+        } else if (random_item == 3) {
+            item_name = "Gruszka";
+            item_price = MARKET_HALL_GRUSZKA_CENA;
+            item_points = MARKET_HALL_GRUSZKA_PUNKTY;
+        } else if (random_item == 4) {
+            item_name = "Banan";
+            item_price = MARKET_HALL_BANAN_CENA;
+            item_points = MARKET_HALL_BANAN_PUNKTY;
         } else {
             item_name = "Woda";
             item_price = MARKET_HALL_WODA_CENA;
@@ -263,7 +279,7 @@ void handle_home_talking() {
         println("Rozmawiasz po raz pierwszy. Będziesz widział menu, z którego będziesz");
         println("mógł wybierać swoje odpowiedzi. Za każdym razem będziesz rozmawiał z inną");
         println("osobą. Rozmowa z mamą jest najlepsza, gdyż możesz tym sprawić, że");
-        println("mam urodzi brata albo siostrę.");
+        println("mama urodzi brata albo siostrę.");
         was_talking_before = true;
     }
     set_console_color(7, 0);
@@ -276,6 +292,9 @@ void handle_home_talking() {
             set_console_color(7, 0);
             return;
         }
+        set_console_color(4, 0);
+        println("Rodzeństwo się obraziło, bo nie dałeś ściągnąć na kartkówce.");
+        set_console_color(7, 0);
     } else if (last_talked_with == "Rodzeństwo") {
         last_talked_with = "Tata";
         println("Rozpoczynasz rozmowę z tatą.");
@@ -314,7 +333,13 @@ void handle_home_talking() {
         println("Rozpoczynasz rozmowę z mamą.");
         while (true) {
             mum_tokens++;
-            if (mum_tokens == 100 || mum_tokens == 200 || mum_tokens == 500) {
+            if (mum_tokens % 27 == 0) {
+                age++;
+                println("<Mama> Wszystkiego najlepszego z okazji Twoich już");
+                println("       " + to_string(age) + " urodzin!");
+                break;
+            }
+            if (mum_tokens % 100 == 0) {
                 int rn2 = get_random_int_to_percent() % 2 + 1;
                 if (rn2 == 1) {
                     println("<Mama> Chciałabym Ci coś powiedzieć. Jedziemy do szpitala.");
@@ -390,18 +415,22 @@ int main() {
     println(JUAMP_VERSION);
     set_console_color(7, 0);
 
-    printnl();
-    string name = read("Wpisz imię: ");
-    print("Twoje miasto: losowanie...");
-    Sleep(1000);
-    string city = "Loresphread";
-    println("\b\b\b\b\b\b\b\b\b\b\b\bLoresphread");
-    set_console_color(2, 0);
-    println("  Loresphread to niewielkie miasteczko położone w zachodniej");
-    println("  części kraju. Jest tam umiarkowany klimat, ale śnieg prawie");
-    println("  nigdy nie pada. Na ogół społeczność jest przyjazna i skierowana");
-    println("  na poznawanie nowych ludzi, również spoza okolicy.");
-    set_console_color(7, 0);
+    bool needConfig = true; // will be usefull on save
+    if (needConfig) {
+        printnl();
+        name = read("Wpisz imię: ");
+        print("Twoje miasto: losowanie...");
+        Sleep(1000);
+        city = "Loresphread";
+        print("\b\b\b\b\b\b\b\b\b\b\b\b");
+        println(city);
+        set_console_color(2, 0);
+        println("  Loresphread to niewielkie miasteczko położone w zachodniej");
+        println("  części kraju. Jest tam umiarkowany klimat, ale śnieg prawie");
+        println("  nigdy nie pada. Na ogół społeczność jest przyjazna i skierowana");
+        println("  na poznawanie nowych ludzi, również spoza okolicy.");
+        set_console_color(7, 0);
+    }
 
     handle_home();
 
