@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <random>
+#include <ctime>
 #include <string>
 #include <fstream>
 
@@ -30,10 +31,8 @@ int age = 12;
 int current_foreground;
 int current_background;
 
-int get_random_int_to_percent() {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-
+int get_random_number() {
+    static std::mt19937 gen(static_cast<unsigned int>(std::time(nullptr))); 
     std::uniform_int_distribution<> dist(1, 10);
 
     return dist(gen);

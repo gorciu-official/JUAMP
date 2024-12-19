@@ -14,7 +14,7 @@ void handle_casino() {
         }
         
         println("Obstawiasz 250$.");
-        int random_num = get_random_int_to_percent() % 2;
+        int random_num = get_random_number() % 2;
         
         if ((response[0] == 'R' || response[0] == 'r') && random_num == 0) {
             println("Wygrałeś! Czerwone trafiło!");
@@ -38,4 +38,5 @@ void handle_work() {
         Sleep(500);
     }
     println("<Szef> No, wystarczy! Możesz iść!");
+    add_money(1000);
 }

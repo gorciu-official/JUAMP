@@ -13,7 +13,7 @@
 
 void handle_market_hall() {
     while (true) {
-        int random_item = get_random_int_to_percent() % 5 + 1;
+        int random_item = get_random_number() % 5 + 1;
         string item_name;
         double item_price;
         int item_points;

@@ -68,7 +68,7 @@ void handle_home_talking() {
                 break;
             }
             if (mum_tokens % 100 == 0) {
-                int rn2 = get_random_int_to_percent() % 2 + 1;
+                int rn2 = get_random_number() % 2 + 1;
                 if (rn2 == 1) {
                     println("<Mama> Chciałabym Ci coś powiedzieć. Jedziemy do szpitala.");
                     println("       Wygląda na to, że dzisiaj urodzę twojego brata.");

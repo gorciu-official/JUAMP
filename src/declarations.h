@@ -27,7 +27,7 @@ extern string name;
 extern string city;
 extern int age;
 
-extern int get_random_int_to_percent();
+extern int get_random_number();
 extern void set_console_color(int foreground, int background);
 extern void print(const string& text);
 extern void println(const string& text);
