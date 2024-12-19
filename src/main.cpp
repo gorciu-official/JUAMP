@@ -10,7 +10,7 @@
 
 /* ================================ VERSION ================================ */
 
-#define JUAMP_VERSION "3.1.1"
+#define JUAMP_VERSION "4.0.0"
 
 /* ================================ FAMILY ================================ */
 
@@ -44,9 +44,9 @@ void set_console_color(int foreground, int background) {
     SetConsoleTextAttribute(hConsole, (background << 4) | foreground);
 #endif
 #ifdef __linux__
-    string fg = to_string(foreground);
-    string bg = to_string(background);
-    cout << "\033[" << fg << ";" << bg << "m";
+    string fg = std::to_string(foreground);
+    string bg = std::to_string(background);
+    std::cout << "\033[" << fg << ";" << bg << "m";
 #endif
     current_background = background;
     current_foreground = foreground;
@@ -134,9 +134,7 @@ void remove_money(double money2) {
 /* ================================ PLACES ================================ */
 
 extern void handle_ropucha();
-
 extern void handle_market_hall();
-
 extern void handle_casino();
 extern void handle_work();
 
