@@ -1,13 +1,11 @@
 .PHONY: all run clean
 
-ifeq ($(OS), Linux)
-    CXX = g++
-    EXE_SUFFIX = .bin
-    FLAGS = -static
+ifeq ($(OS), Windows_NT)
+    CXX = g++ -static
+    EXE_SUFFIX = .exe
 else
     CXX = g++
-    EXE_SUFFIX = .exe
-    FLAGS = -static
+    EXE_SUFFIX = .bin
 endif
 
 SRC_DIR = src
@@ -18,10 +16,10 @@ TARGET = juamp$(EXE_SUFFIX)
 all: $(TARGET)
 
 $(TARGET): $(OBJ_FILES)
-	$(CXX) $(FLAGS) $^ -o $@
+	$(CXX) $^ -o $@
 
 $(SRC_DIR)/%.o: $(SRC_DIR)/%.cpp
-	$(CXX) $(FLAGS) -c $< -o $@
+	$(CXX) -c $< -o $@
 
 run: $(TARGET)
 	./$(TARGET)
