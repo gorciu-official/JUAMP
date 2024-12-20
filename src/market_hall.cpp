@@ -1,4 +1,4 @@
-#include "declarations.h"
+#include <declarations.h>
 
 #define MARKET_HALL_BAGIETKA_CENA 4.50
 #define MARKET_HALL_BAGIETKA_PUNKTY 22
@@ -11,30 +11,41 @@
 #define MARKET_HALL_WODA_CENA 1.50
 #define MARKET_HALL_WODA_PUNKTY 6
 
-void handle_market_hall() {
-    while (true) {
+void handle_market_hall()
+{
+    while (true)
+    {
         int random_item = get_random_number() % 5 + 1;
         string item_name;
         double item_price;
         int item_points;
 
-        if (random_item == 1) {
+        if (random_item == 1)
+        {
             item_name = "Bagietka";
             item_price = MARKET_HALL_BAGIETKA_CENA;
             item_points = MARKET_HALL_BAGIETKA_PUNKTY;
-        } else if (random_item == 2) {
+        }
+        else if (random_item == 2)
+        {
             item_name = "Jabłko";
             item_price = MARKET_HALL_JABLKO_CENA;
             item_points = MARKET_HALL_JABLKO_PUNKTY;
-        } else if (random_item == 3) {
+        }
+        else if (random_item == 3)
+        {
             item_name = "Gruszka";
             item_price = MARKET_HALL_GRUSZKA_CENA;
             item_points = MARKET_HALL_GRUSZKA_PUNKTY;
-        } else if (random_item == 4) {
+        }
+        else if (random_item == 4)
+        {
             item_name = "Banan";
             item_price = MARKET_HALL_BANAN_CENA;
             item_points = MARKET_HALL_BANAN_PUNKTY;
-        } else {
+        }
+        else
+        {
             item_name = "Woda";
             item_price = MARKET_HALL_WODA_CENA;
             item_points = MARKET_HALL_WODA_PUNKTY;
@@ -52,8 +63,10 @@ void handle_market_hall() {
         println("  3 - Wyjdź");
 
         string readed = read("> ", 2);
-        if (readed == "1") {
-            if (item_price > money) {
+        if (readed == "1")
+        {
+            if (item_price > money)
+            {
                 set_console_color(4, 0);
                 println("Nie stać cię na taki wydatek, ale wolisz się zadłużyć.");
                 set_console_color(7, 0);
@@ -64,9 +77,13 @@ void handle_market_hall() {
             println("Zakupiono pomyślnie!");
             set_console_color(7, 0);
             continue;
-        } else if (readed == "2") {
+        }
+        else if (readed == "2")
+        {
             continue;
-        } else if (readed == "3") {
+        }
+        else if (readed == "3")
+        {
             break;
         }
     }
