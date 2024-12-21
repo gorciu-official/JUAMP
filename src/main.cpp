@@ -6,7 +6,7 @@
 #include <string>
 #include <fstream>
 
-#include "declarations.h"
+#include <declarations.h>
 
 /* ================================ VERSION ================================ */
 
@@ -31,14 +31,16 @@ int age = 12;
 int current_foreground;
 int current_background;
 
-int get_random_number() {
-    static std::mt19937 gen(static_cast<unsigned int>(std::time(nullptr))); 
+int get_random_number()
+{
+    static std::mt19937 gen(static_cast<unsigned int>(std::time(nullptr)));
     std::uniform_int_distribution<> dist(1, 10);
 
     return dist(gen);
 }
 
-void set_console_color(int foreground, int background) {
+void set_console_color(int foreground, int background)
+{
 #ifdef _WIN32
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleTextAttribute(hConsole, (background << 4) | foreground);
@@ -52,40 +54,50 @@ void set_console_color(int foreground, int background) {
     current_foreground = foreground;
 }
 
-void print(const string& text) {
+void print(const string &text)
+{
     std::cout << text;
 }
 
-void println(const string& text) {
+void println(const string &text)
+{
     std::cout << text << std::endl;
 }
 
-void printnl() {
+void printnl()
+{
     std::cout << std::endl;
 }
 
-int print_message_box(const string& title, const string& desc) {
+int print_message_box(const string &title, const string &desc)
+{
     std::cout << title << " - " << desc << std::endl;
     return 0;
 }
 
-void add_one_hunger() {
+void add_one_hunger()
+{
     hunger++;
-    if (hunger == 75) {
+    if (hunger == 75)
+    {
         print_message_box("Uwaga!", "Jesteś głodny! Może czas pójść na halę targową i kupić coś do jedzenia.");
     }
-    if (hunger == 90) {
+    if (hunger == 90)
+    {
         print_message_box("OSTATNIE OSTRZEŻENIE!", "Jesteś naprawdę głodny. Musisz kupić coś do jedzenia. Jeżeli nie zareagujesz na to ostrzeżenie, Twoja rozgrywka może się bezpowrotnie skończyć.");
     }
-    if (hunger > 115) {
+    if (hunger > 115)
+    {
         print_message_box("Rozgrywka zakończona!", "Zignorowałeś ostrzeżenia dotyczące głodu twojej postaci. Nie jesteś w stanie kontynuować rozgrywki.");
-        while (true) {
+        while (true)
+        {
             continue;
         }
     }
 }
 
-string read(const string prefix, int rfg, int rbg) {
+string read(const string prefix, int rfg, int rbg)
+{
     add_one_hunger();
 
     int cfg = current_foreground;
@@ -105,7 +117,8 @@ string read(const string prefix, int rfg, int rbg) {
 
 /* ================================ MONEY ================================ */
 
-void add_money(double money2) {
+void add_money(double money2)
+{
     money = money + money2;
     int cfg = current_foreground;
     int cbg = current_background;
@@ -118,7 +131,8 @@ void add_money(double money2) {
     set_console_color(cfg, cbg);
 }
 
-void remove_money(double money2) {
+void remove_money(double money2)
+{
     money = money - money2;
     int cfg = current_foreground;
     int cbg = current_background;
@@ -138,15 +152,18 @@ extern void handle_market_hall();
 extern void handle_casino();
 extern void handle_work();
 
-void handle_outside() {
-    if (!was_outside_before) {
+void handle_outside()
+{
+    if (!was_outside_before)
+    {
         printnl();
         set_console_color(2, 0);
         println("Witaj na zewnątrz! Stąd możesz dostać się do każdego miejsca, jednak w");
         println("\"zbiory miejsc\" możesz dostać się tylko poprzez ulice.");
         was_outside_before = true;
     }
-    while (true) {
+    while (true)
+    {
         printnl();
         set_console_color(3, 0);
         println("Jesteś na dworze!");
@@ -157,15 +174,22 @@ void handle_outside() {
         println("  4 - Idź do kasyna");
 
         string readed = read("> ", 2);
-        if (readed == "1") {
+        if (readed == "1")
+        {
             return;
-        } else if (readed == "2") {
+        }
+        else if (readed == "2")
+        {
             handle_ropucha();
             continue;
-        } else if (readed == "3") {
+        }
+        else if (readed == "3")
+        {
             handle_market_hall();
             continue;
-        } else if (readed == "4") {
+        }
+        else if (readed == "4")
+        {
             handle_casino();
             continue;
         }
@@ -178,11 +202,14 @@ void handle_outside() {
 
 extern void handle_home_talking();
 
-void handle_home() {
-    while (true) {
+void handle_home()
+{
+    while (true)
+    {
         printnl();
 
-        if (money < 0) {
+        if (money < 0)
+        {
             set_console_color(7, 0);
             println("<Mama> JAK ŚMIAŁEŚ SIĘ ZADŁUŻYĆ??? Wolę zero złotych niż tyle ile masz!");
             println("       Przynosisz wstyd naszej rodzinie. Wynocha do pracy!");
@@ -198,13 +225,20 @@ void handle_home() {
         println("  E - Wyjdź z gry");
 
         string readed = read("> ", 2);
-        if (readed == "1") {
+        if (readed == "1")
+        {
             handle_outside();
-        } else if (readed == "2") {
+        }
+        else if (readed == "2")
+        {
             handle_home_talking();
-        } else if (readed == "E") {
+        }
+        else if (readed == "E")
+        {
             return;
-        } else {
+        }
+        else
+        {
             set_console_color(4, 0);
             println("Niepoprawny numer/znak");
             set_console_color(7, 0);
@@ -214,7 +248,8 @@ void handle_home() {
 
 /* ================================ MAIN PROGRAM ================================ */
 
-int main() {
+int main()
+{
     system("chcp 65001 > nul");
     system("cls");
     set_console_color(4, 0);
@@ -224,7 +259,8 @@ int main() {
     set_console_color(7, 0);
 
     bool needConfig = true; // will be usefull on save
-    if (needConfig) {
+    if (needConfig)
+    {
         printnl();
         name = read("Wpisz imię: ");
         print("Twoje miasto: losowanie...");

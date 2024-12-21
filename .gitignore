@@ -3,4 +3,5 @@
 *.dll
 *.bin
 
-.vscode
+/build
+/.vscode
