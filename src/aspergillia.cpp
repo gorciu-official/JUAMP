@@ -2,6 +2,8 @@
 
 #define ASPERGILIA_SHOP_KAWA_CENA 5.00
 #define ASPERGILIA_SHOP_KAWA_PUNKTY 7
+#define ASPERGILIA_SHOP_HERBATA_CENA 5.00
+#define ASPERGILIA_SHOP_HERBATA_PUNKTY 7
 #define ASPERGILIA_SHOP_WODA_CENA 1.00
 #define ASPERGILIA_SHOP_WODA_PUNKTY 10
 
@@ -25,9 +27,15 @@ void handle_aspergilia_shop() {
                 println("Kupiłeś kawę.");
             }
         } else if (choice == "2") {
-            println("Zostanie dodane w następnej aktualizacji.");
+            if (money < ASPERGILIA_SHOP_HERBATA_CENA) {
+                println("Nie masz wystarczająco pieniędzy na herbatę.");
+            } else {
+                remove_money(ASPERGILIA_SHOP_HERBATA_CENA);
+                hunger = hunger - ASPERGILIA_SHOP_HERBATA_PUNKTY;
+                println("Kupiłeś herbatę.");
+            }
         } else if (choice == "3") {
-           if (money < ASPERGILIA_SHOP_WODA_CENA) {
+            if (money < ASPERGILIA_SHOP_WODA_CENA) {
                 println("Nie masz wystarczająco pieniędzy na wodę.");
             } else {
                 remove_money(ASPERGILIA_SHOP_WODA_CENA);
@@ -57,7 +65,7 @@ void handle_city_aspergillia() {
         if (choice == "1") {
             break;
         } else if (choice == "2") {
-            println("Zostanie dodane w następnej aktualizacji.");
+            handle_park();
         } else if (choice == "3") {
             handle_aspergilia_shop();
         } else if (choice == "4") {

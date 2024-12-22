@@ -2,6 +2,8 @@
 
 #define NOPSANIA_SHOP_KAWA_CENA 12.00
 #define NOPSANIA_SHOP_KAWA_PUNKTY 8
+#define NOPSANIA_SHOP_HERBATA_CENA 6.00
+#define NOPSANIA_SHOP_HERBATA_PUNKTY 5
 #define NOPSANIA_SHOP_WODA_CENA 7.00
 #define NOPSANIA_SHOP_WODA_PUNKTY 12
 
@@ -25,7 +27,13 @@ void handle_nopsania_shop() {
                 println("Kupiłeś kawę.");
             }
         } else if (choice == "2") {
-            println("Zostanie dodane w następnej aktualizacji.");
+            if (money < NOPSANIA_SHOP_HERBATA_CENA) {
+                println("Nie masz wystarczająco pieniędzy na herbatę.");
+            } else {
+                remove_money(NOPSANIA_SHOP_HERBATA_CENA);
+                hunger = hunger - NOPSANIA_SHOP_HERBATA_PUNKTY;
+                println("Kupiłeś herbatę.");
+            }
         } else if (choice == "3") {
            if (money < NOPSANIA_SHOP_WODA_CENA) {
                 println("Nie masz wystarczająco pieniędzy na wodę.");
@@ -57,7 +65,7 @@ void handle_city_nopsania() {
         if (choice == "1") {
             break;
         } else if (choice == "2") {
-            println("Zostanie dodane w następnej aktualizacji.");
+            handle_park();
         } else if (choice == "3") {
             handle_nopsania_shop();
         } else if (choice == "4") {

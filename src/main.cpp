@@ -5,12 +5,13 @@
 #include <ctime>
 #include <string>
 #include <fstream>
+#include <vector>
 
 #include "declarations.h"
 
 /* ================================ VERSION ================================ */
 
-#define JUAMP_VERSION "5.0.0"
+#define JUAMP_VERSION "5.1.0"
 
 /* ================================ FAMILY ================================ */
 
@@ -137,6 +138,7 @@ extern void handle_ropucha();
 extern void handle_market_hall();
 extern void handle_casino();
 extern void handle_work();
+extern void handle_train_station();
 
 void handle_outside() {
     if (!was_outside_before) {
@@ -155,6 +157,7 @@ void handle_outside() {
         println("  2 - Odwiedź mały sklepik \"Ropucha\"");
         println("  3 - Idź na halę targową");
         println("  4 - Idź do kasyna");
+        println("  5 - Idź na dworzec ");
 
         string readed = read("> ", 2);
         if (readed == "1") {
@@ -167,6 +170,9 @@ void handle_outside() {
             continue;
         } else if (readed == "4") {
             handle_casino();
+            continue;
+        } else if (readed == "5") {
+            handle_train_station();
             continue;
         }
 
@@ -231,17 +237,43 @@ int main() {
     if (needConfig) {
         printnl();
         name = read("Wpisz imię: ");
-        print("Twoje miasto: losowanie...");
+        print("Twoje miasto: ");
         Sleep(1000);
         std::vector<string> cities = {"Loresphread", "Applaypom", "Sersoponia", "Delaxer", "Bimalia"};
         city = cities[get_random_number() % cities.size()];
-        print("\b\b\b\b\b\b\b\b\b\b\b\b");
         println(city);
         set_console_color(2, 0);
-        println("  Loresphread to niewielkie miasteczko położone w zachodniej");
-        println("  części kraju. Jest tam umiarkowany klimat, ale śnieg prawie");
-        println("  nigdy nie pada. Na ogół społeczność jest przyjazna i skierowana");
-        println("  na poznawanie nowych ludzi, również spoza okolicy.");
+        if (city == "Loresphread") {
+            println("  Loresphread to niewielkie miasteczko położone w zachodniej");
+            println("  części kraju. Jest tam umiarkowany klimat, ale śnieg prawie");
+            println("  nigdy nie pada. Na ogół społeczność jest przyjazna i skierowana");
+            println("  na poznawanie nowych ludzi, również spoza okolicy.");
+        } else if (city == "Applaypom") {
+            println("  Applaypom to miasto, które jest znane z przemysłu i technologii.");
+            println("  W mieście znajduje się wiele firm, które produkują różne produkty");
+            println("  technologiczne. W mieście jest również wiele miejsc, w których");
+            println("  można się dobrze bawić. Według ludzi - miasto to \"krajowe Chiny\".");
+        } else if (city == "Sersoponia") {
+            println("  Serseponia to miasto, które jest znane z kultury i sztuki. W mieście");
+            println("  znajduje się wiele muzeów, galerii sztuki, teatrów i innych miejsc,");
+            println("  w których można się rozwijać w dziedzinie kultury. W mieście jest");
+            println("  również wiele gór, gdyż jest ono położone na południu kraju.");
+        } else if (city == "Delaxer") {
+            println("  Delaxer to mała wieś, która jest położona na wschodzie kraju.");
+            println("  Wioska jest znana z tego, że żyje tam wiele zwierząt, które można");
+            println("  spotkać na co dzień. Wioska jest również znana z tego, że jest tam");
+            println("  o wiele więcej pól, na których można uprawiać rośliny, niż w całej");
+            println("  reszcie kraju.");
+        } else if (city == "Bimalia") {
+            println("  Bimalia to drugie po Nopsanii największe miasto w kraju pod względem");
+            println("  liczby ludności. Jest to raj dla dorosłych. W mieście znajduje się wiele");
+            println("  klubów nocnych, restauracji, kin i innych miejsc, w których można spędzać");
+            println("  czas.");
+        } else {
+            println("Uncaught TypeError: Cannot read properties of undefined (reading \"description\")");
+            println(" at main:258:12");
+            return 12;
+        }
         set_console_color(7, 0);
     }
 

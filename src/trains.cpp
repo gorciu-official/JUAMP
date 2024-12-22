@@ -17,17 +17,17 @@ void handle_train_station() {
                 println("Nie masz wystarczająco pieniędzy na bilet.");
             } else {
                 int city_num = 0;
+                remove_money(30);
                 while (true) {
                     println("Do jakiego miasta chcesz dojechać?");
                     println("  1 - Aspergillia");
                     println("  2 - Nopsania [stolica]");
-                    remove_money(30);
                     string city_choice = read("> ");
                     if (city_choice == "1") {
                         println("Kupiłeś bilet do Aspergillii.");
                         city_num = 1;
-                        println("Wracasz do domu.");
                         handle_city_aspergillia();
+                        println("Wracasz do domu.");
                         break;
                     } else if (city_choice == "2") {
                         println("Kupiłeś bilet do Nopsanii.");

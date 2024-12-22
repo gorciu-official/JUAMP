@@ -37,3 +37,5 @@ extern string read(const string prefix, int rfg = 7, int rbg = 0);
 extern void remove_money(double money2);
 extern void add_money(double money2);
 extern void add_one_hunger();
+
+extern void handle_park();
