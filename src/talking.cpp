@@ -1,4 +1,5 @@
 #include "declarations.h"
+#include <vector>
 
 void handle_home_talking() {
     printnl();
@@ -90,12 +91,21 @@ void handle_home_talking() {
             set_console_color(2, 0);
             print("2) ");
             set_console_color(7, 0);
+            println("Jaka pogoda?");
+            set_console_color(2, 0);
+            print("3) ");
+            set_console_color(7, 0);
             println("Idę do swojego pokoju na chwilę [koniec rozmowy].");
             string task = read("# ", 3);
             if (task == "1") {
                 println("<Mama> Nie, dzięki.");
                 continue;
             } else if (task == "2") {
+                println("<Mama> Sam zobacz.");
+                Sleep(5000);
+                system("curl wttr.in?lang=pl");
+                continue;
+            } else if (task == "3") {
                 break;
             } else {
                 set_console_color(4, 0);
@@ -104,5 +114,36 @@ void handle_home_talking() {
             }
         }
         return;
+    }
+}
+
+void handle_park_talking() {
+    std::vector<std::vector<string>> dialogues = {
+        {"<Ty> Nic się panu nie stało?", "<Mężczyzna> Nie, nic się nie stało. Co u Ciebie?", "<Ty> Wszystko w porządku. Co pan tu robi?", "<Mężczyzna> Spaceruję sobie. Nudzi mi się. W domu nie mam niczego do roboty. Babka zawsze mnie wypycha na dwór.", "<Ty> Aha. To ja idę dalej. Miłego spaceru.", "<Mężczyzna> Dziękuję."},
+        {"<Ty> Dzień dobry, co słychać?", "<Kobieta> Dzień dobry, wszystko dobrze. A u Ciebie?", "<Ty> Też dobrze. Co pani tu robi?", "<Kobieta> Przyszłam na spacer z psem. Lubię spędzać czas na świeżym powietrzu.", "<Ty> To miłego spaceru.", "<Kobieta> Dziękuję, nawzajem."},
+        {"<Ty> Cześć, jak się masz?", "<Chłopak> Cześć, dobrze. A Ty?", "<Ty> Też dobrze. Co robisz w parku?", "<Chłopak> Przyszedłem pobiegać. Lubię aktywnie spędzać czas.", "<Ty> To powodzenia w bieganiu.", "<Chłopak> Dzięki, miłego dnia."}
+    };
+
+    while (true) {
+        int random_index = get_random_number() % dialogues.size();
+
+        printnl();
+        set_console_color(7, 0);
+        for (const auto& line : dialogues[random_index]) {
+            println(line);
+            Sleep(500);
+        }
+
+        printnl();
+        set_console_color(3, 0);
+        println("Czy chcesz zagadać do kogoś innego? (T/N)");
+        string choice = read("> ", 0xD);
+        if (choice != "T") {
+            break;
+        }
+
+        println("Idziesz dalej. Szukasz osoby, która chciałaby porozmawiać.");
+        Sleep(3000);
+        continue;
     }
 }

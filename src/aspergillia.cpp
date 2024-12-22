@@ -1,5 +1,7 @@
 #include "declarations.h"
 
+extern void handle_cinema();
+
 #define ASPERGILIA_SHOP_KAWA_CENA 5.00
 #define ASPERGILIA_SHOP_KAWA_PUNKTY 7
 #define ASPERGILIA_SHOP_HERBATA_CENA 5.00
@@ -71,7 +73,7 @@ void handle_city_aspergillia() {
         } else if (choice == "4") {
             println("Zostanie dodane w następnej aktualizacji.");
         } else if (choice == "5") {
-            println("Zostanie dodane w następnej aktualizacji.");
+            handle_cinema();
         } else {
             println("Niepoprawny numer/znak");
         }

@@ -1,5 +1,7 @@
 #include "declarations.h"
 
+extern void handle_cinema();
+
 #define NOPSANIA_SHOP_KAWA_CENA 12.00
 #define NOPSANIA_SHOP_KAWA_PUNKTY 8
 #define NOPSANIA_SHOP_HERBATA_CENA 6.00
@@ -71,7 +73,7 @@ void handle_city_nopsania() {
         } else if (choice == "4") {
             println("Zostanie dodane w następnej aktualizacji.");
         } else if (choice == "5") {
-            println("Zostanie dodane w następnej aktualizacji.");
+            handle_cinema();
         } else {
             println("Niepoprawny numer/znak");
         }
