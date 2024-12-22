@@ -1,5 +1,8 @@
 #include "declarations.h"
 
+extern void handle_city_aspergillia();
+extern void handle_city_nopsania();
+
 void handle_train_station() {
     while (true) {
         printnl();
@@ -46,6 +49,3 @@ void handle_train_station() {
         }
     }
 }
-
-extern void handle_city_aspergillia();
-extern void handle_city_nopsania();
