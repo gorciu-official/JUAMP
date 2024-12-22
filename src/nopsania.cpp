@@ -42,7 +42,7 @@ void handle_nopsania_shop() {
     }
 }
 
-void handle_nopsania() {
+void handle_city_nopsania() {
     while (true) {
         printnl();
         set_console_color(3, 0);
