@@ -1,7 +1,7 @@
 #include "declarations.h"
 
 void add_newspaper_event() {
-    int event = get_random_number() % 7;
+    int event = get_random_number() % 13;
     switch (event) {
         case 0:
             println("W Aspergilli powstał nowy projekt ustawy, który zakłada że każdy mieszkaniec musi w ciągu roku posadzić 5 drzew!");
@@ -44,6 +44,45 @@ void add_newspaper_event() {
             println("najbardziej potrzebującym\" - mówi organizator biegu. W wydarzeniu wzięło udział ponad 1000 osób, a zebrane");
             println("fundusze zostaną przeznaczone na zakup niezbędnych artykułów dla dzieci. \"Dzieci w Afryce się bardzo");
             println("ucieszą\" - dodaje organizator, co wzbudziło kontrowersje, że pomaga się dzieciom z innych kontynentów.");
+            break;
+        case 7:
+            println("Sprawdziliśmy, dlaczego social media są tak popularne! \"To jest przyszłość!\" - mówi jeden z ekspertów.");
+            println("\"Social-media mogą być naszą codziennością, zwłaszcza że Meta wydała na projekt Virtual Reality masę");
+            println("kasy, ale ludzie wolą oglądać koty na TikToku niż korzystać z VR\" - dodaje. Ludzie nie chcą rzeczywistości");
+            println("VR, ale za to zaglądają do sieci co chwilę, aby sprawdzić, co nowego dzieje się w ich ulubionych serwisach, a");
+            println("dzięki uzależniającym algorytmom spędzają tam coraz więcej czasu. \"Jest to opłacalne\" - podsumowują krytycy.");
+            break;
+        case 8:
+            println("Nowa restauracja w mieście zdobywa serca mieszkańców! \"To najlepsze jedzenie, jakie kiedykolwiek jadłem!\"");
+            println("- mówi jeden z klientów. Restauracja oferuje szeroki wybór dań kuchni międzynarodowej, a także lokalne specjały.");
+            println("Właściciel restauracji zapowiada, że wkrótce wprowadzi nowe dania do menu. \"Co za dużo, to niezdrowo\" -");
+            println("komentują krytycy, ponieważ nie chcą, aby restaruracja postawiła na ilość dań a nie na jakość.");
+            break;
+        case 9:
+            println("W mieście otwarto nowy park rozrywki! \"To miejsce pełne atrakcji dla całej rodziny\" - mówi dyrektor parku.");
+            println("Park oferuje różnorodne atrakcje, od karuzel i rollercoasterów, po interaktywne wystawy i pokazy.");
+            println("Mieszkańcy miasta są zachwyceni nowym miejscem, które zapewnia rozrywkę na najwyższym poziomie. \"Nasze miasto");
+            println("jest z każdą chwilą coraz bardziej atrakcyjne dla turystów\" - kontynuuje.");
+            break;
+        case 10:
+            println("W mieście odbył się koncert charytatywny na rzecz schroniska dla zwierząt. \"To wspaniała inicjatywa, która pomaga");
+            println("bezdomnym zwierzętom\" - mówi organizator koncertu. W wydarzeniu wzięło udział wielu znanych artystów, a zebrane");
+            println("fundusze zostaną przeznaczone na zakup karmy i leków dla zwierząt. Pomimo wszelkich starań organizatorów, nadal");
+            println("nie ma zbyt wielu osób chętnych do wspomagania schroniska. \"To jest smutne\" - dodaje organizator.");
+            break;
+        case 11:
+            println("W mieście otwarto nową galerię sztuki! \"To miejsce, gdzie można podziwiać dzieła lokalnych artystów\" - mówi kurator galerii.");
+            println("Galeria oferuje szeroki wybór obrazów, rzeźb i fotografii, a także organizuje warsztaty i spotkania z artystami.");
+            println("Mieszkańcy miasta są zachwyceni nowym miejscem, które promuje lokalną sztukę. \"To jest coś, czego nam brakowało\" -");
+            println("dodaje jeden z odwiedzających galerię. \"Mam nadzieję, że galeria przetrwa na dłużej\" - komentują krytycy.");
+            break;
+        case 12:
+            println("W mieście odbył się festiwal filmowy! \"To wspaniała okazja, aby zobaczyć najnowsze filmy z całego świata\" - mówi organizator festiwalu.");
+            println("W wydarzeniu wzięło udział wielu znanych reżyserów i aktorów, a także młodzi twórcy, którzy mieli okazję zaprezentować swoje filmy.");
+            println("Mieszkańcy miasta są zachwyceni różnorodnością filmów i wysokim poziomem organizacji festiwalu.");
+            break;
+        default:
+            println("Niestety, ale coś mokrego kapnęło na gazetę i nie udało Ci się przeczytać tego artykułu.");
             break;
     }
 }

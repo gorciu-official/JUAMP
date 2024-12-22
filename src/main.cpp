@@ -10,7 +10,7 @@
 
 /* ================================ VERSION ================================ */
 
-#define JUAMP_VERSION "4.0.1"
+#define JUAMP_VERSION "5.0.0"
 
 /* ================================ FAMILY ================================ */
 
@@ -215,8 +215,12 @@ void handle_home() {
 /* ================================ MAIN PROGRAM ================================ */
 
 int main() {
+#ifdef _WIN32
     system("chcp 65001 > nul");
     system("cls");
+#else
+    system("clear");
+#endif
     set_console_color(4, 0);
     println("JUAMP - symulator życia");
     print("Aktualna wersja: ");
@@ -229,7 +233,8 @@ int main() {
         name = read("Wpisz imię: ");
         print("Twoje miasto: losowanie...");
         Sleep(1000);
-        city = "Loresphread";
+        std::vector<string> cities = {"Loresphread", "Applaypom", "Sersoponia", "Delaxer", "Bimalia"};
+        city = cities[get_random_number() % cities.size()];
         print("\b\b\b\b\b\b\b\b\b\b\b\b");
         println(city);
         set_console_color(2, 0);
