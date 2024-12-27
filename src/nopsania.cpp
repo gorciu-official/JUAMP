@@ -1,4 +1,4 @@
-#include "declarations.h"
+#include "declarations.hpp"
 
 extern void handle_cinema();
 
@@ -54,7 +54,6 @@ void handle_nopsania_shop() {
 
 void handle_city_nopsania() {
     while (true) {
-        printnl();
         set_console_color(3, 0);
         println("Jesteś w Nopsanii");
         set_console_color(7, 0);

@@ -8,8 +8,9 @@
 #endif
 #ifdef _WIN32
 #include <windows.h>
-#include <winuser.h>
 #endif
+
+#define sleep_seconds(ms) Sleep(ms * 1000)
 
 #include <iostream>
 
@@ -26,6 +27,7 @@ extern int money;
 extern string name;
 extern string city;
 extern int age;
+extern int sex;
 
 extern int get_random_number();
 extern void set_console_color(int foreground, int background);
@@ -39,3 +41,8 @@ extern void add_money(double money2);
 extern void add_one_hunger();
 
 extern void handle_park();
+
+extern void clear_screen();
+extern void pause_nul();
+
+extern void talk(string who, string what);

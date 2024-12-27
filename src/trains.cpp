@@ -1,4 +1,4 @@
-#include "declarations.h"
+#include "declarations.hpp"
 
 extern void handle_city_aspergillia();
 extern void handle_city_nopsania();

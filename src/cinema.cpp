@@ -1,4 +1,4 @@
-#include "declarations.h"
+#include "declarations.hpp"
 
 #define KINO_CENA 45
 
@@ -12,11 +12,7 @@ void handle_cinema() {
     set_console_color(4, 0);
     println("UWAGA! Ta część gry zawiera treści, które są pobierane z zewnętrznych źródeł. Nie ponosimy odpowiedzialności");
     println("  za treści inne niż oczekiwane lub za ewentualne problemy po stronie serwerów. Naciśnij dowolny klawisz, aby kontynuować.");
-#ifdef _WIN32
-    system("pause > nul");
-#elif __linux__
-    system("read -s -n 1");
-#endif
+    pause_nul();
     set_console_color(7, 0);
     println("Powiększ terminal jak najbardziej jak możesz, aby zapewnić najlepsze wrażenia z kina. Masz 5 sekund na przygotowanie się.");
     Sleep(5000);

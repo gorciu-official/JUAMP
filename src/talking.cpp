@@ -1,4 +1,4 @@
-#include "declarations.h"
+#include "declarations.hpp"
 #include <vector>
 
 void handle_home_talking() {
@@ -8,7 +8,7 @@ void handle_home_talking() {
         println("Rozmawiasz po raz pierwszy. Będziesz widział menu, z którego będziesz");
         println("mógł wybierać swoje odpowiedzi. Za każdym razem będziesz rozmawiał z inną");
         println("osobą. Rozmowa z mamą jest najlepsza, gdyż możesz tym sprawić, że");
-        println("mama urodzi brata albo siostrę.");
+        println("mama urodzi brata albo siostrę (dziwne, ale tak).");
         was_talking_before = true;
     }
     set_console_color(7, 0);
@@ -21,9 +21,14 @@ void handle_home_talking() {
             set_console_color(7, 0);
             return;
         }
-        set_console_color(4, 0);
-        println("Rodzeństwo się obraziło, bo nie dałeś ściągnąć na kartkówce.");
-        set_console_color(7, 0);
+
+        int is_okay = get_random_number() % 2 + 1; // 2 = false
+        if (is_okay == 2) {
+            set_console_color(4, 0);
+            println("Rodzeństwo się obraziło, bo nie dałeś ściągnąć na kartkówce.");
+            set_console_color(7, 0);
+            return;
+        }
     } else if (last_talked_with == "Rodzeństwo") {
         last_talked_with = "Tata";
         println("Rozpoczynasz rozmowę z tatą.");
@@ -43,10 +48,15 @@ void handle_home_talking() {
             println("Idę do swojego pokoju na chwilę [koniec rozmowy].");
             string task = read("# ", 3);
             if (task == "1") {
-                println("<Tata> Nie, ale fajnie, że pytasz.");
+                talk("Tata", "Nie, dzięki.");
                 continue;
             } else if (task == "2") {
-                println("<Tata> Wspaniale!");
+                int is_dad_ok = get_random_number() % 2 + 1;
+                if (is_dad_ok == 1) {
+                    talk("Tata", "Dobrze, ale czuję się trochę zmęczony.");
+                } else {
+                    talk("Tata", "Szczerze, nie czuję się najlepiej.");
+                }
                 continue;
             } else if (task == "3") {
                 break;
@@ -64,21 +74,18 @@ void handle_home_talking() {
             mum_tokens++;
             if (mum_tokens % 27 == 0) {
                 age++;
-                println("<Mama> Wszystkiego najlepszego z okazji Twoich już");
-                println("       " + std::to_string(age) + " urodzin!");
+                talk("Mama", "Wszystkiego najlepszego z okazji twoich już " + std::to_string(age) + " urodzin.\nCieszę się, że jesteś ze mną.");
                 break;
             }
             if (mum_tokens % 100 == 0) {
                 int rn2 = get_random_number() % 2 + 1;
                 if (rn2 == 1) {
-                    println("<Mama> Chciałabym Ci coś powiedzieć. Jedziemy do szpitala.");
-                    println("       Wygląda na to, że dzisiaj urodzę twojego brata.");
+                    talk("Mama", "Chciałabym Ci coś powiedzieć. Jedziemy do szpitala.\nWygląda na to, że dzisiaj urodzę twojego brata.");
                     Sleep(5000);
                     brothers++;
                     break;
                 } else {
-                    println("<Mama> Chciałabym Ci coś powiedzieć. Jedziemy do szpitala.");
-                    println("       Wygląda na to, że dzisiaj urodzę twoją siostrę.");
+                    talk("Mama", "Chciałabym Ci coś powiedzieć. Jedziemy do szpitala.\nWygląda na to, że dzisiaj urodzę twoją siostrę.");
                     Sleep(5000);
                     sisters++;
                     break;
@@ -98,10 +105,10 @@ void handle_home_talking() {
             println("Idę do swojego pokoju na chwilę [koniec rozmowy].");
             string task = read("# ", 3);
             if (task == "1") {
-                println("<Mama> Nie, dzięki.");
+                talk("Mama", "Nie, nie potrzebuję pomocy.");
                 continue;
             } else if (task == "2") {
-                println("<Mama> Sam zobacz.");
+                talk("Mama", "Sam zobacz.");
                 Sleep(5000);
                 system("curl wttr.in?lang=pl");
                 continue;
@@ -118,10 +125,31 @@ void handle_home_talking() {
 }
 
 void handle_park_talking() {
-    std::vector<std::vector<string>> dialogues = {
-        {"<Ty> Nic się panu nie stało?", "<Mężczyzna> Nie, nic się nie stało. Co u Ciebie?", "<Ty> Wszystko w porządku. Co pan tu robi?", "<Mężczyzna> Spaceruję sobie. Nudzi mi się. W domu nie mam niczego do roboty. Babka zawsze mnie wypycha na dwór.", "<Ty> Aha. To ja idę dalej. Miłego spaceru.", "<Mężczyzna> Dziękuję."},
-        {"<Ty> Dzień dobry, co słychać?", "<Kobieta> Dzień dobry, wszystko dobrze. A u Ciebie?", "<Ty> Też dobrze. Co pani tu robi?", "<Kobieta> Przyszłam na spacer z psem. Lubię spędzać czas na świeżym powietrzu.", "<Ty> To miłego spaceru.", "<Kobieta> Dziękuję, nawzajem."},
-        {"<Ty> Cześć, jak się masz?", "<Chłopak> Cześć, dobrze. A Ty?", "<Ty> Też dobrze. Co robisz w parku?", "<Chłopak> Przyszedłem pobiegać. Lubię aktywnie spędzać czas.", "<Ty> To powodzenia w bieganiu.", "<Chłopak> Dzięki, miłego dnia."}
+    std::vector<std::vector<std::pair<string, string>>> dialogues = {
+        {
+            {"Ty", "Nic się panu nie stało?"},
+            {"Mężczyzna", "Nie, nic się nie stało. Co u Ciebie?"},
+            {"Ty", "Wszystko w porządku. Co pan tu robi?"},
+            {"Mężczyzna", "Spaceruję sobie. Nudzi mi się. W domu nie mam niczego do roboty.\n Babka zawsze mnie wypycha na dwór."},
+            {"Ty", "Aha. To ja idę dalej. Miłego spaceru."},
+            {"Mężczyzna", "Dziękuję."}
+        },
+        {
+            {"Ty", "Dzień dobry, co słychać?"},
+            {"Kobieta", "Dzień dobry, wszystko dobrze. A u Ciebie?"},
+            {"Ty", "Też dobrze. Co pani tu robi?"},
+            {"Kobieta", "Przyszłam na spacer z psem. Lubię spędzać czas na świeżym powietrzu."},
+            {"Ty", "To miłego spaceru."},
+            {"Kobieta", "Dziękuję, nawzajem."}
+        },
+        {
+            {"Ty", "Cześć, jak się masz?"},
+            {"Chłopak", "Cześć, dobrze. A Ty?"},
+            {"Ty", "Też dobrze. Co robisz w parku?"},
+            {"Chłopak", "Przyszedłem pobiegać. Lubię aktywnie spędzać czas."},
+            {"Ty", "To powodzenia w bieganiu."},
+            {"Chłopak", "Dzięki, miłego dnia."}
+        }
     };
 
     while (true) {
@@ -129,8 +157,10 @@ void handle_park_talking() {
 
         printnl();
         set_console_color(7, 0);
-        for (const auto& line : dialogues[random_index]) {
-            println(line);
+        for (const auto& dialogue : dialogues[random_index]) {
+            const auto& who = dialogue.first;
+            const auto& what = dialogue.second;
+            talk(who, what);
             Sleep(500);
         }
 
@@ -138,7 +168,7 @@ void handle_park_talking() {
         set_console_color(3, 0);
         println("Czy chcesz zagadać do kogoś innego? (T/N)");
         string choice = read("> ", 0xD);
-        if (choice != "T") {
+        if (choice != "T" && choice != "t") {
             break;
         }
 

@@ -1,4 +1,4 @@
-#include "declarations.h"
+#include "declarations.hpp"
 
 void add_newspaper_event() {
     int event = get_random_number() % 13;

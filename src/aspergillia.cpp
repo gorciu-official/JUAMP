@@ -1,4 +1,4 @@
-#include "declarations.h"
+#include "declarations.hpp"
 
 extern void handle_cinema();
 

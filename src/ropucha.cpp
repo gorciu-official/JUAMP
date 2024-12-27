@@ -1,4 +1,4 @@
-#include "declarations.h"
+#include "declarations.hpp"
 
 // Newspaper only available in the "Ropucha" shop
 extern void handle_newspaper();
@@ -40,11 +40,13 @@ void handle_ropucha() {
             }
             remove_money(SHOP_ROPUCHA_CENA_GAZETA);
             handle_newspaper();
+            pause_nul();
             continue;
         }
 
         set_console_color(4, 0);
         println("Niepoprawny numer/znak");
         set_console_color(7, 0);
+        sleep_seconds(0.5);
     }
 }

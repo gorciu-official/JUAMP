@@ -1,4 +1,4 @@
-#include "declarations.h"
+#include "declarations.hpp"
 
 #define PARK_LODY_CENA 5.00
 #define PARK_LODY_PUNKTY 7

@@ -5,7 +5,7 @@ ifeq ($(OS), Windows_NT)
     EXE_SUFFIX = .exe
 else
     CXX = g++
-    EXE_SUFFIX = .bin
+    EXE_SUFFIX = .elf
 endif
 
 SRC_DIR = src

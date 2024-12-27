@@ -1,4 +1,4 @@
-#include "declarations.h"
+#include "declarations.hpp"
 
 #define MARKET_HALL_BAGIETKA_CENA 4.50
 #define MARKET_HALL_BAGIETKA_PUNKTY 22
@@ -12,6 +12,7 @@
 #define MARKET_HALL_WODA_PUNKTY 6
 
 void handle_market_hall() {
+    printnl();
     while (true) {
         int random_item = get_random_number() % 5 + 1;
         string item_name;
