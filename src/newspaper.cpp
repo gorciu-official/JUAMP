@@ -1,7 +1,7 @@
 #include "declarations.hpp"
 
 void add_newspaper_event() {
-    int event = get_random_number() % 13;
+    int event = get_random_number() % 15;
     switch (event) {
         case 0:
             println("W Aspergilli powstał nowy projekt ustawy, który zakłada że każdy mieszkaniec musi w ciągu roku posadzić 5 drzew!");
@@ -80,6 +80,16 @@ void add_newspaper_event() {
             println("W mieście odbył się festiwal filmowy! \"To wspaniała okazja, aby zobaczyć najnowsze filmy z całego świata\" - mówi organizator festiwalu.");
             println("W wydarzeniu wzięło udział wielu znanych reżyserów i aktorów, a także młodzi twórcy, którzy mieli okazję zaprezentować swoje filmy.");
             println("Mieszkańcy miasta są zachwyceni różnorodnością filmów i wysokim poziomem organizacji festiwalu.");
+            break;
+        case 13:
+            println("W mieście odbył się festiwal kulinarny! \"To miejsce, gdzie można spróbować potraw z całego świata\" - mówi organizator festiwalu.");
+            println("W wydarzeniu wzięło udział wielu znanych kucharzy i restauratorów, a także amatorzy gotowania, którzy mieli okazję zaprezentować swoje umiejętności.");
+            println("Mieszkańcy miasta są zachwyceni różnorodnością potraw i wysokim poziomem organizacji festiwalu.");
+            break;
+        case 14:
+            println("W mieście odbył się festiwal mody! \"To miejsce, gdzie można zobaczyć najnowsze trendy w modzie\" - mówi organizator festiwalu.");
+            println("W wydarzeniu wzięło udział wielu znanych projektantów i modeli, a także młodzi twórcy, którzy mieli okazję zaprezentować swoje kolekcje.");
+            println("Mieszkańcy miasta są zachwyceni różnorodnością ubrań i wysokim poziomem organizacji festiwalu.");
             break;
         default:
             println("Niestety, ale coś mokrego kapnęło na gazetę i nie udało Ci się przeczytać tego artykułu.");

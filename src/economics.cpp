@@ -12,7 +12,15 @@ void handle_casino() {
         }
 
         println("Ile chcesz obstawić? Podaj kwotę (minimum 50$):");
-        int bet_amount = stoi(read("# ", 0x0D));
+        int bet_amount;
+        try {
+            bet_amount = stoi(read("# ", 0x0D));
+        } catch (const std::invalid_argument& e) {
+            set_console_color(4, 0);
+            println("Nieprawidłowa kwota. Spróbuj ponownie.");
+            set_console_color(7, 0);
+            continue;
+        }
         if (bet_amount < 50) {
             set_console_color(4, 0);
             println("Minimalna stawka to 50$. Spróbuj ponownie.");
@@ -94,12 +102,58 @@ void handle_casino() {
 
 void handle_work() {
     set_console_color(7, 0);
-    println("<Szef> Witam! Popracujesz se dzisiaj mocno!");
-    for (size_t i = 0; i < 30; i++)
-    {
-        add_one_hunger();
-        Sleep(500 / sex); // 500ms for woman, 250ms for man
+    
+    while (true) {
+        println("Wybierz pracę: Bank (B), Fabryka (F), KFC (K), McDonald's (M), czy wyjść (E)?");
+        string job_response = read("# ", 0x0D);
+
+        if (job_response[0] == 'E' || job_response[0] == 'e') {
+            set_console_color(4, 0);
+            println("Przerwałeś pracę.");
+            set_console_color(7, 0);
+            break;
+        }
+
+        int hunger_increase = 0;
+        int earnings = 0;
+        int time_spent = 0;
+
+        if (job_response[0] == 'B' || job_response[0] == 'b') {
+            println("Pracujesz w banku. Siedzisz przy biurku i obsługujesz niezadowolonych klientów.");
+            earnings = 2000;
+            time_spent = 5;
+            hunger_increase = 2;
+            sleep_seconds(time_spent / sex);
+        } else if (job_response[0] == 'F' || job_response[0] == 'f') {
+            println("Pracujesz w fabryce. To ciężka praca przy taśmie produkcyjnej.");
+            earnings = 1500;
+            time_spent = 7; 
+            hunger_increase = 4;
+            sleep_seconds(time_spent / sex);
+        } else if (job_response[0] == 'K' || job_response[0] == 'k') {
+            println("Pracujesz w KFC. Smażysz kurczaki i obsługujesz klientów.");
+            earnings = 1000;
+            time_spent = 4; 
+            hunger_increase = 3;
+            sleep_seconds(time_spent / sex);
+        } else if (job_response[0] == 'M' || job_response[0] == 'm') {
+            println("Pracujesz w McDonald's. Przygotowujesz burgery i obsługujesz klientów.");
+            earnings = 1200;
+            time_spent = 6;
+            hunger_increase = 5;
+            sleep_seconds(time_spent / sex);
+        } else {
+            set_console_color(4, 0);
+            println("Wybierz poprawną pracę.");
+            set_console_color(7, 0);
+            continue;
+        }
+
+        println("<Szef> No, wystarczy!");
+
+        for (int i = 0; i < hunger_increase; i++) {
+            add_one_hunger();
+        }
+        add_money(earnings);
     }
-    println("<Szef> No, wystarczy! Możesz iść!");
-    add_money(1000);
 }

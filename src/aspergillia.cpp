@@ -1,6 +1,7 @@
 #include "declarations.hpp"
 
 extern void handle_cinema();
+extern void handle_restaurant();
 
 #define ASPERGILIA_SHOP_KAWA_CENA 5.00
 #define ASPERGILIA_SHOP_KAWA_PUNKTY 7
@@ -71,7 +72,7 @@ void handle_city_aspergillia() {
         } else if (choice == "3") {
             handle_aspergilia_shop();
         } else if (choice == "4") {
-            println("Zostanie dodane w następnej aktualizacji.");
+            handle_restaurant();
         } else if (choice == "5") {
             handle_cinema();
         } else {

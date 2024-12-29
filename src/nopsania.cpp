@@ -1,6 +1,7 @@
 #include "declarations.hpp"
 
 extern void handle_cinema();
+extern void handle_restaurant();
 
 #define NOPSANIA_SHOP_KAWA_CENA 12.00
 #define NOPSANIA_SHOP_KAWA_PUNKTY 8
@@ -70,7 +71,7 @@ void handle_city_nopsania() {
         } else if (choice == "3") {
             handle_nopsania_shop();
         } else if (choice == "4") {
-            println("Zostanie dodane w następnej aktualizacji.");
+            handle_restaurant();
         } else if (choice == "5") {
             handle_cinema();
         } else {

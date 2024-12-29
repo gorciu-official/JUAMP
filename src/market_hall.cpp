@@ -10,11 +10,13 @@
 #define MARKET_HALL_BANAN_PUNKTY 7
 #define MARKET_HALL_WODA_CENA 1.50
 #define MARKET_HALL_WODA_PUNKTY 6
+#define MARKET_HALL_CIASTO_CENA 15.00
+#define MARKET_HALL_CIASTO_PUNKTY 30
 
 void handle_market_hall() {
     printnl();
     while (true) {
-        int random_item = get_random_number() % 5 + 1;
+        int random_item = get_random_number() % 6 + 1;
         string item_name;
         double item_price;
         int item_points;
@@ -35,6 +37,10 @@ void handle_market_hall() {
             item_name = "Banan";
             item_price = MARKET_HALL_BANAN_CENA;
             item_points = MARKET_HALL_BANAN_PUNKTY;
+        } else if (random_item == 5) {
+            item_name = "Ciasto";
+            item_price = MARKET_HALL_CIASTO_CENA;
+            item_points = MARKET_HALL_CIASTO_PUNKTY;
         } else {
             item_name = "Woda";
             item_price = MARKET_HALL_WODA_CENA;

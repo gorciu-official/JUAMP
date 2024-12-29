@@ -12,7 +12,7 @@
 
 /* ================================ VERSION ================================ */
 
-#define JUAMP_VERSION "7.0.0"
+#define JUAMP_VERSION "7.1.0"
 
 /* ================================ FAMILY ================================ */
 
@@ -20,6 +20,7 @@ int sisters = 0;
 int brothers = 0;
 bool was_outside_before = false;
 bool was_talking_before = false;
+bool has_reputation_before = false;
 string last_talked_with = "Mama";
 int mum_tokens = 0;
 int hunger = 0;
@@ -28,6 +29,7 @@ string name = "";
 string city = "";
 int age = 12;
 int sex = 2; // 1 - kobieta, 2 - mężczyzna
+int reputation = 100;
 
 /* ================================ INTERNALS ================================ */
 
@@ -144,6 +146,26 @@ void talk(string who, string what) {
     println(result);
 }
 
+/* ================================ REPUTATION ================================ */
+
+void add_reputation(int what) {
+    if (!has_reputation_before) {
+        int cfg = current_foreground;
+        int cbg = current_background;
+        set_console_color(2, 0);
+        println("Właśnie zdobyłeś pierwsze punkty reputacji. Reputacja bezpośrednio odbija się na zachowanie");
+        println("bohaterów gry, zwłaszcza krytycznej rodziny. Jeżeli masz niską reputację, istnieje nawet szansa,");
+        println("że szef w pracy odmówi zatrudnienia Ciebie. Dbaj o reputację jak o własne życie.");
+        set_console_color(cfg, cbg);
+        has_reputation_before = true;
+    }
+    reputation += what;
+}
+
+void remove_reputation(int what) {
+    reputation -= what;
+}
+
 /* ================================ MONEY ================================ */
 
 void add_money(double money2) {
@@ -185,73 +207,77 @@ void remove_money(double money2) {
 #define SAVE_FILE "savegame.dat"
 
 bool save_game() {
-    std::ofstream save(SAVE_FILE, std::ios::binary);
-    if (!save) {
+    std::ofstream file(SAVE_FILE, std::ios::binary);
+    if (!file) {
         return false;
     }
 
-    save.write(reinterpret_cast<char*>(&sisters), sizeof(sisters));
-    save.write(reinterpret_cast<char*>(&brothers), sizeof(brothers));
-    save.write(reinterpret_cast<char*>(&was_outside_before), sizeof(was_outside_before));
-    save.write(reinterpret_cast<char*>(&was_talking_before), sizeof(was_talking_before));
+    size_t name_len = name.size();
+    size_t city_len = city.size();
 
-    size_t last_talked_with_size = last_talked_with.size();
-    save.write(reinterpret_cast<char*>(&last_talked_with_size), sizeof(last_talked_with_size));
-    save.write(last_talked_with.data(), last_talked_with_size);
+    file.write(reinterpret_cast<const char*>(&sisters), sizeof(sisters));
+    file.write(reinterpret_cast<const char*>(&brothers), sizeof(brothers));
+    file.write(reinterpret_cast<const char*>(&was_outside_before), sizeof(was_outside_before));
+    file.write(reinterpret_cast<const char*>(&was_talking_before), sizeof(was_talking_before));
+    file.write(reinterpret_cast<const char*>(&has_reputation_before), sizeof(has_reputation_before));
 
-    save.write(reinterpret_cast<char*>(&mum_tokens), sizeof(mum_tokens));
-    save.write(reinterpret_cast<char*>(&hunger), sizeof(hunger));
-    save.write(reinterpret_cast<char*>(&money), sizeof(money));
+    file.write(reinterpret_cast<const char*>(&name_len), sizeof(name_len));
+    file.write(name.c_str(), name_len);
 
-    size_t name_size = name.size();
-    save.write(reinterpret_cast<char*>(&name_size), sizeof(name_size));
-    save.write(name.data(), name_size);
+    file.write(reinterpret_cast<const char*>(&city_len), sizeof(city_len));
+    file.write(city.c_str(), city_len);
 
-    size_t city_size = city.size();
-    save.write(reinterpret_cast<char*>(&city_size), sizeof(city_size));
-    save.write(city.data(), city_size);
+    file.write(reinterpret_cast<const char*>(&mum_tokens), sizeof(mum_tokens));
+    file.write(reinterpret_cast<const char*>(&hunger), sizeof(hunger));
+    file.write(reinterpret_cast<const char*>(&money), sizeof(money));
+    file.write(reinterpret_cast<const char*>(&age), sizeof(age));
+    file.write(reinterpret_cast<const char*>(&sex), sizeof(sex));
+    file.write(reinterpret_cast<const char*>(&reputation), sizeof(reputation));
 
-    save.write(reinterpret_cast<char*>(&age), sizeof(age));
-    save.write(reinterpret_cast<char*>(&sex), sizeof(sex));
+    size_t last_talked_len = last_talked_with.size();
+    file.write(reinterpret_cast<const char*>(&last_talked_len), sizeof(last_talked_len));
+    file.write(last_talked_with.c_str(), last_talked_len);
 
-    save.close();
+    file.close();
     return true;
 }
 
 bool load_game() {
-    std::ifstream load(SAVE_FILE, std::ios::binary);
-    if (!load) {
+    std::ifstream file(SAVE_FILE, std::ios::binary);
+    if (!file) {
         return false;
     }
 
-    load.read(reinterpret_cast<char*>(&sisters), sizeof(sisters));
-    load.read(reinterpret_cast<char*>(&brothers), sizeof(brothers));
-    load.read(reinterpret_cast<char*>(&was_outside_before), sizeof(was_outside_before));
-    load.read(reinterpret_cast<char*>(&was_talking_before), sizeof(was_talking_before));
+    size_t name_len = 0;
+    size_t city_len = 0;
+    size_t last_talked_len = 0;
 
-    size_t last_talked_with_size;
-    load.read(reinterpret_cast<char*>(&last_talked_with_size), sizeof(last_talked_with_size));
-    last_talked_with.resize(last_talked_with_size);
-    load.read(&last_talked_with[0], last_talked_with_size);
+    file.read(reinterpret_cast<char*>(&sisters), sizeof(sisters));
+    file.read(reinterpret_cast<char*>(&brothers), sizeof(brothers));
+    file.read(reinterpret_cast<char*>(&was_outside_before), sizeof(was_outside_before));
+    file.read(reinterpret_cast<char*>(&was_talking_before), sizeof(was_talking_before));
+    file.read(reinterpret_cast<char*>(&has_reputation_before), sizeof(has_reputation_before));
 
-    load.read(reinterpret_cast<char*>(&mum_tokens), sizeof(mum_tokens));
-    load.read(reinterpret_cast<char*>(&hunger), sizeof(hunger));
-    load.read(reinterpret_cast<char*>(&money), sizeof(money));
+    file.read(reinterpret_cast<char*>(&name_len), sizeof(name_len));
+    name.resize(name_len);
+    file.read(&name[0], name_len);
 
-    size_t name_size;
-    load.read(reinterpret_cast<char*>(&name_size), sizeof(name_size));
-    name.resize(name_size);
-    load.read(&name[0], name_size);
+    file.read(reinterpret_cast<char*>(&city_len), sizeof(city_len));
+    city.resize(city_len);
+    file.read(&city[0], city_len);
 
-    size_t city_size;
-    load.read(reinterpret_cast<char*>(&city_size), sizeof(city_size));
-    city.resize(city_size);
-    load.read(&city[0], city_size);
+    file.read(reinterpret_cast<char*>(&mum_tokens), sizeof(mum_tokens));
+    file.read(reinterpret_cast<char*>(&hunger), sizeof(hunger));
+    file.read(reinterpret_cast<char*>(&money), sizeof(money));
+    file.read(reinterpret_cast<char*>(&age), sizeof(age));
+    file.read(reinterpret_cast<char*>(&sex), sizeof(sex));
+    file.read(reinterpret_cast<char*>(&reputation), sizeof(reputation));
 
-    load.read(reinterpret_cast<char*>(&age), sizeof(age));
-    load.read(reinterpret_cast<char*>(&sex), sizeof(sex));
+    file.read(reinterpret_cast<char*>(&last_talked_len), sizeof(last_talked_len));
+    last_talked_with.resize(last_talked_len);
+    file.read(&last_talked_with[0], last_talked_len);
 
-    load.close();
+    file.close();
     return true;
 }
 
@@ -273,6 +299,20 @@ void handle_outside() {
     }
     while (true) {
         printnl();
+
+        if (get_random_number() % 6 == 3) {
+            talk("Bezdomny", "Dasz mi 5 dolarów na chleb?");
+            println("Możesz zaakceptować ofertę pisząc T, lub odrzucić pisząc cokolwiek innego.");
+            string readed = read("> ", 2);
+            if (readed == "t" || readed == "T") {
+                remove_money(5);
+                add_reputation(1);
+                talk("Bezdomny", "Dzięki!");
+            }
+
+            continue;
+        }
+
         set_console_color(3, 0);
         println("Jesteś na dworze!");
         set_console_color(7, 0);
@@ -315,6 +355,7 @@ void handle_home() {
         if (money < 0) {
             set_console_color(7, 0);
             talk("Mama", "JAK ŚMIAŁEŚ SIĘ ZADŁUŻYĆ? TO POWAŻNY PROBLEM DLA NASZEJ RODZINY! WSTYD NA CAŁĄ MIEJSCOWOŚĆ!\nRozumiem że mamy tu wiele fajnych rzeczy, ale nie możemy sobie na nie pozwolić tak często. Lepiej zarabiać\n pieniądze, a nie wydawać je na głupoty! Wynocha do pracy!");
+            remove_reputation(3);
             handle_work();
             continue;
         }
@@ -394,7 +435,7 @@ int main() {
         print("Wybierz płeć - ");
         set_console_color(7, 0);
         println("będzie ona używana głównie w dialogach i raczej nic nie zmieni w grze poza jedną rzeczą.");
-        println("Otóż kobiety mają mniej siły i w praca zajmie im dłużej niż mężczyźnie. Wybierz mądrze.");
+        println("Otóż kobiety mają mniej siły i praca zajmie im dłużej niż mężczyźnie. Wybierz mądrze.");
         while (true) {
             name = read("# ");
             if (name.empty()) {
