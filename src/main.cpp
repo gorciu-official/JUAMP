@@ -28,7 +28,7 @@ int money = 1000;
 string name = "";
 string city = "";
 int age = 12;
-int sex = 2; // 1 - kobieta, 2 - mężczyzna
+int sex = 2; // 1 - kobieta, 2 - mężczyzna (mezczyzna > kobita w tej grze)
 int reputation = 100;
 
 /* ================================ INTERNALS ================================ */
@@ -49,8 +49,8 @@ void set_console_color(int foreground, int background) {
     SetConsoleTextAttribute(hConsole, (background << 4) | foreground);
 #endif
 #ifdef __linux__
-    string fg = std::to_string(foreground);
-    string bg = std::to_string(background);
+    string fg = std::to_string(30 + foreground);
+    string bg = std::to_string(40 + background);
     std::cout << "\033[" << fg << ";" << bg << "m";
 #endif
     current_background = background;
