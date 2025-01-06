@@ -7,3 +7,10 @@
 .vscode
 
 savegame.dat
+
+bin/
+/bin/
+tmp/
+/tmp/
+.idea/
+/.idea/
