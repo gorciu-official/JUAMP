@@ -12,7 +12,7 @@
 
 /* ================================ VERSION ================================ */
 
-#define JUAMP_VERSION "7.1.0"
+#define JUAMP_VERSION "8.0.0"
 
 /* ================================ FAMILY ================================ */
 
@@ -28,7 +28,7 @@ int money = 1000;
 string name = "";
 string city = "";
 int age = 12;
-int sex = 2; // 1 - kobieta, 2 - mężczyzna (mezczyzna > kobita w tej grze)
+int gender = 2; // 1 - kobieta, 2 - mężczyzna (mezczyzna > kobita w tej grze)
 int reputation = 100;
 
 /* ================================ INTERNALS ================================ */
@@ -146,6 +146,33 @@ void talk(string who, string what) {
     println(result);
 }
 
+int get_console_width() {
+#ifdef _WIN32
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    int width = 80; // Default width
+    if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi)) {
+        width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+    }
+    return width;
+#elif __linux__
+    struct winsize w;
+    ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+    return w.ws_col;
+#else
+    return 80;
+#endif
+}
+
+void print_center_line(string what, const char placeholder = ' ') {
+    int width = get_console_width();
+    int padding = (width - what.length()) / 2;
+    if (padding > 0) {
+        std::cout << std::string(padding, placeholder) << what << std::endl;
+    } else {
+        std::cout << what << std::endl;
+    }
+}
+
 /* ================================ REPUTATION ================================ */
 
 void add_reputation(int what) {
@@ -173,15 +200,14 @@ void add_money(double money2) {
     int cfg = current_foreground;
     int cbg = current_background;
     set_console_color(6, 0);
-    if (sex == 1) {
-        print("Otrzymałaś ");
+    string startgender;
+    if (gender == 1) {
+        startgender = "Otrzymałaś ";
     } else {
-        print("Otrzymałeś ");
+        startgender = "Otrzymałeś ";
     }
-    print(std::to_string(money2));
-    print("$. Masz teraz ");
-    print(std::to_string(money));
-    println("$.");
+    print_center_line(startgender + std::to_string(money2) + "$. Masz teraz aż " + std::to_string(money));
+    
     set_console_color(cfg, cbg);
 }
 
@@ -190,94 +216,108 @@ void remove_money(double money2) {
     int cfg = current_foreground;
     int cbg = current_background;
     set_console_color(6, 0);
-    if (sex == 1) {
-        print("Zapłaciłaś lub straciłaś ");
+    string startgender;
+    if (gender == 1) {
+        startgender = "Zapłaciłaś lub straciłaś ";
     } else {
-        print("Zapłaciłeś lub straciłeś ");
+        startgender = "Zapłaciłeś lub straciłeś ";
     }
-    print(std::to_string(money2));
-    print("$. Masz teraz tylko ");
-    print(std::to_string(money));
-    println("$.");
+    print_center_line(startgender + std::to_string(money2) + "$. Masz teraz tylko " + std::to_string(money));
+    
     set_console_color(cfg, cbg);
 }
 
 /* ================================ SAVE SYSTEM ================================ */
 
-#define SAVE_FILE "savegame.dat"
+string DEFAULT_SAVE_FILE = "saves/savegame.toml";
+string SAVE_FILE = DEFAULT_SAVE_FILE;
+
+#include "toml.hpp" // if you see errors, do `make download_toml` and reopen tab
 
 bool save_game() {
-    std::ofstream file(SAVE_FILE, std::ios::binary);
-    if (!file) {
+    toml::table save_data{
+        {"sisters", sisters},
+        {"brothers", brothers},
+        {"was_outside_before", was_outside_before},
+        {"was_talking_before", was_talking_before},
+        {"has_reputation_before", has_reputation_before},
+        {"last_talked_with", last_talked_with},
+        {"mum_tokens", mum_tokens},
+        {"hunger", hunger},
+        {"money", money},
+        {"name", name},
+        {"city", city},
+        {"age", age},
+        {"gender", gender},
+        {"reputation", reputation}
+    };
+
+#ifdef _WIN32
+    system("if not exist saves mkdir saves");
+#else
+    system("mkdir -p saves");
+#endif
+
+    std::ofstream file(SAVE_FILE);
+
+    if (!file.is_open()) {
         return false;
     }
 
-    size_t name_len = name.size();
-    size_t city_len = city.size();
-
-    file.write(reinterpret_cast<const char*>(&sisters), sizeof(sisters));
-    file.write(reinterpret_cast<const char*>(&brothers), sizeof(brothers));
-    file.write(reinterpret_cast<const char*>(&was_outside_before), sizeof(was_outside_before));
-    file.write(reinterpret_cast<const char*>(&was_talking_before), sizeof(was_talking_before));
-    file.write(reinterpret_cast<const char*>(&has_reputation_before), sizeof(has_reputation_before));
-
-    file.write(reinterpret_cast<const char*>(&name_len), sizeof(name_len));
-    file.write(name.c_str(), name_len);
-
-    file.write(reinterpret_cast<const char*>(&city_len), sizeof(city_len));
-    file.write(city.c_str(), city_len);
-
-    file.write(reinterpret_cast<const char*>(&mum_tokens), sizeof(mum_tokens));
-    file.write(reinterpret_cast<const char*>(&hunger), sizeof(hunger));
-    file.write(reinterpret_cast<const char*>(&money), sizeof(money));
-    file.write(reinterpret_cast<const char*>(&age), sizeof(age));
-    file.write(reinterpret_cast<const char*>(&sex), sizeof(sex));
-    file.write(reinterpret_cast<const char*>(&reputation), sizeof(reputation));
-
-    size_t last_talked_len = last_talked_with.size();
-    file.write(reinterpret_cast<const char*>(&last_talked_len), sizeof(last_talked_len));
-    file.write(last_talked_with.c_str(), last_talked_len);
-
+    file << save_data;
     file.close();
+
     return true;
 }
 
 bool load_game() {
-    std::ifstream file(SAVE_FILE, std::ios::binary);
-    if (!file) {
+    clear_screen();
+    printnl();
+    set_console_color(2, 0);
+    print_center_line(" JUAMP Launcher ");
+    set_console_color(7, 0);
+    print_center_line("Aby kontynuować rozgrywkę, należy wpisać nazwę save");
+    print_center_line("Jeżeli dopiero zaczynasz, wymyśl nazwę save do nowej gry (może być puste)");
+    printnl();
+
+#ifdef _WIN32
+    system("if not exist saves mkdir saves");
+#else
+    system("mkdir -p saves");
+#endif
+    
+    SAVE_FILE = "saves/" + read("> ") + ".toml";
+
+    std::ifstream file(SAVE_FILE);
+    if (!file.is_open()) {
+        clear_screen();
         return false;
     }
 
-    size_t name_len = 0;
-    size_t city_len = 0;
-    size_t last_talked_len = 0;
+    toml::table save_data;
+    try {
+        save_data = toml::parse(file);
+    } catch (const toml::parse_error&) {
+        clear_screen();
+        return false;
+    }
 
-    file.read(reinterpret_cast<char*>(&sisters), sizeof(sisters));
-    file.read(reinterpret_cast<char*>(&brothers), sizeof(brothers));
-    file.read(reinterpret_cast<char*>(&was_outside_before), sizeof(was_outside_before));
-    file.read(reinterpret_cast<char*>(&was_talking_before), sizeof(was_talking_before));
-    file.read(reinterpret_cast<char*>(&has_reputation_before), sizeof(has_reputation_before));
+    sisters = save_data["sisters"].value_or(0);
+    brothers = save_data["brothers"].value_or(0);
+    was_outside_before = save_data["was_outside_before"].value_or(was_outside_before);
+    was_talking_before = save_data["was_talking_before"].value_or(was_talking_before);
+    has_reputation_before = save_data["has_reputation_before"].value_or(has_reputation_before);
+    last_talked_with = save_data["last_talked_with"].value_or(last_talked_with);
+    mum_tokens = save_data["mum_tokens"].value_or(mum_tokens);
+    hunger = save_data["hunger"].value_or(hunger);
+    money = save_data["money"].value_or(money);
+    name = save_data["name"].value_or(name);
+    city = save_data["city"].value_or(city);
+    age = save_data["age"].value_or(age);
+    gender = save_data["gender"].value_or(gender);
+    reputation = save_data["reputation"].value_or(100);
 
-    file.read(reinterpret_cast<char*>(&name_len), sizeof(name_len));
-    name.resize(name_len);
-    file.read(&name[0], name_len);
-
-    file.read(reinterpret_cast<char*>(&city_len), sizeof(city_len));
-    city.resize(city_len);
-    file.read(&city[0], city_len);
-
-    file.read(reinterpret_cast<char*>(&mum_tokens), sizeof(mum_tokens));
-    file.read(reinterpret_cast<char*>(&hunger), sizeof(hunger));
-    file.read(reinterpret_cast<char*>(&money), sizeof(money));
-    file.read(reinterpret_cast<char*>(&age), sizeof(age));
-    file.read(reinterpret_cast<char*>(&sex), sizeof(sex));
-    file.read(reinterpret_cast<char*>(&reputation), sizeof(reputation));
-
-    file.read(reinterpret_cast<char*>(&last_talked_len), sizeof(last_talked_len));
-    last_talked_with.resize(last_talked_len);
-    file.read(&last_talked_with[0], last_talked_len);
-
-    file.close();
+    clear_screen();
     return true;
 }
 
@@ -293,8 +333,8 @@ void handle_outside() {
     if (!was_outside_before) {
         printnl();
         set_console_color(2, 0);
-        println("Witaj na zewnątrz! Stąd możesz dostać się do każdego miejsca, jednak są to tylko podstawowe miejsca.");
-        println("Do reszty możesz dostać się tylko poprzez ulice.");
+        print_center_line("Witaj na zewnątrz! Stąd możesz dostać się do każdego miejsca, jednak są to tylko podstawowe miejsca.");
+        print_center_line("Do reszty możesz dostać się tylko poprzez ulice.");
         was_outside_before = true;
     }
     while (true) {
@@ -437,24 +477,24 @@ int main() {
         println("będzie ona używana głównie w dialogach i raczej nic nie zmieni w grze poza jedną rzeczą.");
         println("Otóż kobiety mają mniej siły i praca zajmie im dłużej niż mężczyźnie. Wybierz mądrze.");
         while (true) {
-            name = read("# ");
-            if (name.empty()) {
+            string gendersel = read("# ");
+            if (gendersel.empty()) {
                 set_console_color(4, 0);
                 println("Płeć nie może być pusta!");
                 set_console_color(7, 0);
                 continue;
             }
-            if (name != "Kobieta" && name != "Mężczyzna" && name != "Mezczyzna") {
+            if (gendersel != "Kobieta" && gendersel != "Mężczyzna" && gendersel != "Mezczyzna") {
                 set_console_color(4, 0);
                 println("Przyjmowane wartości to \"Kobieta\" lub \"Mężczyzna\" (z dużej litery).");
                 set_console_color(7, 0);
                 continue;
             }
 
-            if (name == "Kobieta") {
-                sex = 1;
+            if (gendersel == "Kobieta") {
+                gender = 1;
             } else {
-                sex = 2;
+                gender = 2;
             }
             break;
         }

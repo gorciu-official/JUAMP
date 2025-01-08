@@ -27,7 +27,7 @@ extern int money;
 extern string name;
 extern string city;
 extern int age;
-extern int sex;
+extern int gender;
 
 extern int get_random_number();
 extern void set_console_color(int foreground, int background);
@@ -46,3 +46,6 @@ extern void clear_screen();
 extern void pause_nul();
 
 extern void talk(string who, string what);
+
+extern void remove_reputation(int what);
+extern void add_reputation(int what);

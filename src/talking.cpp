@@ -177,3 +177,40 @@ void handle_park_talking() {
         continue;
     }
 }
+
+void handle_ropucha_talking() {
+    talk("Sprzedawczyni z \"Ropucha\"", "Witaj. Chcesz coś kupić?");
+    int num = get_random_number() % 5;
+    switch (num) {
+        case 0:
+            talk("Ty", "Nie, proszę mi tu nie wciskać kredytu na mieszkanie.");
+            talk("Sprzedawczyni z \"Ropucha\"", "Ale ja nie jestem bankiem...");
+            talk("Ty", "Och! Ja znam te wasze sztuczki. Na nic się nie nabiorę. ŻADNEGO KREDYTU!");
+            talk("Sprzedawczyni z \"Ropucha\"", "Niszczysz mi reputację. PROSZĘ WYJŚĆ.");
+            remove_reputation(2);
+            break;
+
+        case 1:
+            talk("Ty", "Nie. Gnębi mnie taka jedna rzecz. Ile to dwa plus dwa?");
+            talk("Sprzedawczyni z \"Ropucha\"", "NIE MÓWI SIĘ PLUS TYLKO DODAĆ!");
+            talk("Ty", "No dobra, do widzenia.");
+
+        case 2:
+            talk("Ty", "Nie, dziękuję. Niczego nie potrzebuję.");
+            talk("Sprzedawczyni z \"Ropucha\"", "W porządku, zapraszam ponownie.");
+            add_reputation(2);
+            break;
+
+        case 3:
+            talk("Ty", "Nie, dziękuję.");
+            talk("Sprzedawczyni z \"Ropucha\"", "Zapraszam więc ponownie.");
+            add_reputation(2);
+            break;
+                
+        default:
+            talk("Ty", "Nie, mam autyzm.");
+            talk("Sprzedawczyni z \"Ropucha\"", "xD... Wyjdź mi ze sklepu natychmiast!");
+            remove_reputation(1);
+            break;
+    }
+}

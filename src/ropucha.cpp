@@ -3,6 +3,9 @@
 // Newspaper only available in the "Ropucha" shop
 extern void handle_newspaper();
 
+// src/talking.cpp
+extern void handle_ropucha_talking();
+
 #define SHOP_ROPUCHA_CENA_BAGIETKA 3.50
 #define SHOP_ROPUCHA_PUNKTY_BAGIETKA 16
 
@@ -17,6 +20,7 @@ void handle_ropucha() {
         println("  1 - Wyjdź ze sklepu");
         println("  2 - Kup bagietkę");
         println("  3 - Kup gazetę");
+        println("  4 - Zagadaj babę w sklepie");
 
         string readed = read("> ", 2);
         if (readed == "1") {
@@ -41,6 +45,9 @@ void handle_ropucha() {
             remove_money(SHOP_ROPUCHA_CENA_GAZETA);
             handle_newspaper();
             pause_nul();
+            continue;
+        } else if (readed == "4") {
+            handle_ropucha_talking();
             continue;
         }
 

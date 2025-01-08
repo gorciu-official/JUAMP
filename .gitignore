@@ -6,4 +6,6 @@
 
 .vscode
 
-savegame.dat
+saves/
+
+src/toml.hpp

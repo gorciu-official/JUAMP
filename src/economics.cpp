@@ -1,40 +1,40 @@
 #include "declarations.hpp"
+#define CASINO_BACKGROUND 0 // in current state setting this to something other than 0 will destroy graphics
 
 void handle_casino() {
     while (true) {
         set_console_color(7, 0);
         println("Co chcesz robić? Automaty (S), Ruletka (R), Gry karciane (C), czy wyjść (E)?");
-        string response = read("# ", 0x0D);
+        string response = read("# ", 5);
 
         if (response[0] == 'E' || response[0] == 'e') {
-            println("<Miły pan> Żegnam Cię, szczęścia w przyszłości!");
+            talk("Miły pan", "Żegnam Cię, szczęścia w przyszłości!");
             break;
         }
 
         println("Ile chcesz obstawić? Podaj kwotę (minimum 50$):");
         int bet_amount;
         try {
-            bet_amount = stoi(read("# ", 0x0D));
+            bet_amount = stoi(read("# ", 5));
         } catch (const std::invalid_argument& e) {
-            set_console_color(4, 0);
+            set_console_color(4, CASINO_BACKGROUND);
             println("Nieprawidłowa kwota. Spróbuj ponownie.");
-            set_console_color(7, 0);
+            set_console_color(7, CASINO_BACKGROUND);
             continue;
         }
         if (bet_amount < 50) {
-            set_console_color(4, 0);
+            set_console_color(4, CASINO_BACKGROUND);
             println("Minimalna stawka to 50$. Spróbuj ponownie.");
-            set_console_color(7, 0);
+            set_console_color(7, CASINO_BACKGROUND);
             continue;
         }
         if (money < bet_amount) {
-            set_console_color(4, 0);
+            set_console_color(4, CASINO_BACKGROUND);
             println("Ostrzeżenie: zadłużasz się. Może czas przestać grać?");
-            set_console_color(7, 0);
+            set_console_color(7, CASINO_BACKGROUND);
         }
 
         if (response[0] == 'S' || response[0] == 's') {
-            // Gra na automatach
             println("Grasz na automatach za " + std::to_string(bet_amount) + "$.");
             int slot1 = get_random_number() % 5;
             int slot2 = get_random_number() % 5;
@@ -43,24 +43,24 @@ void handle_casino() {
             println(std::to_string(slot1) + " " + std::to_string(slot2) + " " + std::to_string(slot3));
 
             if (slot1 == slot2 && slot2 == slot3) {
-                set_console_color(0x0D, 0);
+                set_console_color(5, CASINO_BACKGROUND);
                 println("Jackpot! Wygrywasz " + std::to_string(bet_amount * 10) + "$!");
-                set_console_color(7, 0);
+                set_console_color(7, CASINO_BACKGROUND);
                 add_money(bet_amount * 10);
             } else if (slot1 == slot2 || slot1 == slot3 || slot2 == slot3) {
-                set_console_color(0x0D, 0);
+                set_console_color(5, CASINO_BACKGROUND);
                 println("Wygrałeś " + std::to_string(bet_amount * 2) + "$!");
-                set_console_color(7, 0);
+                set_console_color(7, CASINO_BACKGROUND);
                 add_money(bet_amount * 2);
             } else {
-                set_console_color(4, 0);
+                set_console_color(4, CASINO_BACKGROUND);
                 println("Przegrałeś " + std::to_string(bet_amount) + "$.");
-                set_console_color(7, 0);
+                set_console_color(7, CASINO_BACKGROUND);
                 remove_money(bet_amount);
             }
         } else if (response[0] == 'R' || response[0] == 'r') {
             println("Obstawiasz " + std::to_string(bet_amount) + "$. Czerwone (R) czy czarne (B)?");
-            string bet = read("# ", 0x0D);
+            string bet = read("# ", 5);
 
             println("Ruletka się kręci...");
             sleep_seconds(1);
@@ -95,7 +95,7 @@ void handle_casino() {
                 println("Remis. Nic nie tracisz.");
             }
         } else {
-            println("<Miły pan> Nie rozumiem. Spróbuj ponownie.");
+            talk("Miły pan", "Nie rozumiem. Spróbuj ponownie.");
         }
     }
 }
@@ -105,7 +105,7 @@ void handle_work() {
     
     while (true) {
         println("Wybierz pracę: Bank (B), Fabryka (F), KFC (K), McDonald's (M), czy wyjść (E)?");
-        string job_response = read("# ", 0x0D);
+        string job_response = read("# ", 5);
 
         if (job_response[0] == 'E' || job_response[0] == 'e') {
             set_console_color(4, 0);
@@ -123,25 +123,25 @@ void handle_work() {
             earnings = 2000;
             time_spent = 5;
             hunger_increase = 2;
-            sleep_seconds(time_spent / sex);
+            sleep_seconds(time_spent / gender);
         } else if (job_response[0] == 'F' || job_response[0] == 'f') {
             println("Pracujesz w fabryce. To ciężka praca przy taśmie produkcyjnej.");
             earnings = 1500;
             time_spent = 7; 
             hunger_increase = 4;
-            sleep_seconds(time_spent / sex);
+            sleep_seconds(time_spent / gender);
         } else if (job_response[0] == 'K' || job_response[0] == 'k') {
             println("Pracujesz w KFC. Smażysz kurczaki i obsługujesz klientów.");
             earnings = 1000;
             time_spent = 4; 
             hunger_increase = 3;
-            sleep_seconds(time_spent / sex);
+            sleep_seconds(time_spent / gender);
         } else if (job_response[0] == 'M' || job_response[0] == 'm') {
             println("Pracujesz w McDonald's. Przygotowujesz burgery i obsługujesz klientów.");
             earnings = 1200;
             time_spent = 6;
             hunger_increase = 5;
-            sleep_seconds(time_spent / sex);
+            sleep_seconds(time_spent / gender);
         } else {
             set_console_color(4, 0);
             println("Wybierz poprawną pracę.");
@@ -149,7 +149,7 @@ void handle_work() {
             continue;
         }
 
-        println("<Szef> No, wystarczy!");
+        talk("Szef", "No, wystarczy!");
 
         for (int i = 0; i < hunger_increase; i++) {
             add_one_hunger();
