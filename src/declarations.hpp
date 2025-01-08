@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <termios.h>
 #include <fcntl.h>
+#include <sys/ioctl.h>
 #define Sleep(ms) sleep((ms) / 1000)
 #endif
 #ifdef _WIN32
