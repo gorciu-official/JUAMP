@@ -8,7 +8,7 @@
 #include <vector>
 #include <regex>
 
-#include "declarations.hpp"
+#include <declarations.hpp>
 
 /* ================================ VERSION ================================ */
 
@@ -232,7 +232,7 @@ void remove_money(double money2) {
 string DEFAULT_SAVE_FILE = "saves/savegame.toml";
 string SAVE_FILE = DEFAULT_SAVE_FILE;
 
-#include "toml.hpp" // if you see errors, do `make download_toml` and reopen tab
+#include <toml++/toml.hpp>
 
 bool save_game() {
     toml::table save_data{

@@ -1,4 +1,4 @@
-#include "declarations.hpp"
+#include <declarations.hpp>
 
 // Newspaper only available in the "Ropucha" shop
 extern void handle_newspaper();
