@@ -1,4 +1,5 @@
-#include "declarations.hpp"
+#include <declarations.hpp>
+#include <string>
 #define CASINO_BACKGROUND 0 // in current state setting this to something other than 0 will destroy graphics
 
 void handle_casino() {

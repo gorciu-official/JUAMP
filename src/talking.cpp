@@ -1,5 +1,6 @@
-#include "declarations.hpp"
+#include <declarations.hpp>
 #include <vector>
+#include <string>
 
 void handle_home_talking() {
     printnl();
