@@ -9,3 +9,8 @@
 saves/
 
 src/toml.hpp
+
+bin/
+tmp/
+.idea/
+/.idea/
