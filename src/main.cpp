@@ -144,7 +144,7 @@ string read(string prefix) {
 
 string current_save = "";
 
-void load_game() {
+bool load_game() {
     try {
         clear_screen();
         set_console_color(6);
@@ -164,6 +164,8 @@ void load_game() {
         speed = config["speed"].value_or(0);
         inteligency = config["inteligency"].value_or(0);
         condition = config["condition"].value_or(0);
+
+        return true;
     } catch (const toml::parse_error& err) {
         return false;
     }
@@ -198,7 +200,6 @@ int main() {
         display_error_box("Aby zapewnić jakiekolwiek wrażenia z gry powiększ terminal i naciśnij Enter.");
         pak();
     }
-    set_console_color(6);
-    print_logo();
+    load_game();
     return 0;
 }
