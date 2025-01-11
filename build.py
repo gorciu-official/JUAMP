@@ -147,7 +147,7 @@ try:
             sp.run(['curl', '-s', 'https://raw.githubusercontent.com/marzer/tomlplusplus/master/toml.hpp', '-o', 'src/toml.hpp'])
         except (sp.CalledProcessError, FileExistsError, FileNotFoundError):
             if sys.platform == 'win32':
-                ShowError(f"InstallNormalOperatingSystemError: It looks like you are using windows and don't have curl installed, download it manually from www.xyz.pl or install a normal operating system")
+                ShowError(f"InstallNormalOperatingSystemError: It looks like you are using windows and don't have curl installed, download it manually from idk or install a normal operating system")
                 exit(ProbablyWindowsIssueExit)
             else:
                 ShowError(f"There was an error while downloading toml++, try to download it manually from https://github.com/marzer/tomlplusplus/blob/master/toml.hpp")

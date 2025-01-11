@@ -16,7 +16,7 @@ Use `g++`, because is cross-platform and does not suck on Windows (i'm watching 
 
 ### Linux building
 
-Just install `g++` from your distribution's package manager (if needed). Then you are good to run `make`.
+Just install `g++` from your distribution's package manager (if needed). Then you are good to run `python3 build.py`.
 
 ### Windows building
 
