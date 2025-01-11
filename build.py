@@ -110,7 +110,7 @@ try:
 
                 padding: int = (maxlen - len(file)) + 3
                 arrow: str = "\033[1m║\033[0m" if i < len(objs) - 1 else "🮦"
-                print(f'{file}{" " * padding} {arrow}' if not i == len(objs) - 1 else f'{file} {'═' * (padding - 1)} ╗')
+                print(f'{file}{" " * padding} {arrow}' if not i == len(objs) - 1 else f'{file} {"-" * (padding - 1)} ╗')
                 time.sleep(0.1)
 
         completed = []
