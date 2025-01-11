@@ -158,7 +158,7 @@ bool load_game() {
         if (!file.is_open()) {
             return false;
         }
-        auto config = toml::parse();
+        auto config = toml::parse(file);
 
         name = config["name"].value_or("Unknown");
         age = config["age"].value_or(0);
