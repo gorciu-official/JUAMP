@@ -154,6 +154,8 @@ bool load_game() {
 
         current_save = read("#");
 
+        string full_save_name = "saves" + current_save + ".toml";
+
         std::ifstream file(full_save_name);
         if (!file.is_open()) {
             return false;
