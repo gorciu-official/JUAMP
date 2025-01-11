@@ -227,17 +227,26 @@ void save_game() {
         {"condition", condition},
         {"location", location_id}
     };
+
+#ifdef _WIN32
+    system("if not exist saves md saves");
+#else
+    system("mkdir -p saves");
+#endif
     
     string full_save_name = "saves/" + current_save + ".toml";
     std::ofstream file(full_save_name);
-    file << full_save_name;
+    file << save;
 }
 
 // =================================== GAME ===================================
 
-extern void handle_game();
+extern void handle_game(bool need_to_start_dialogue);
 
 int main() {
+#ifdef _WIN32
+    system("chcp 65001 > nul"); // windows moment
+#endif
     while (true) {
         int console_width = get_console_width();
         int console_height = get_console_height();
@@ -290,6 +299,6 @@ int main() {
             break;
         }
     }
-    handle_game();
+    handle_game(!success);
     return 0;
 }

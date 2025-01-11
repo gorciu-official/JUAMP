@@ -7,6 +7,7 @@ typedef std::string string;
 struct Location {
     string id;
     string name;
+    string description;
     std::map<string, string> directions;
 };
 
@@ -28,3 +29,5 @@ extern void println(string what);
 extern void save_game();
 extern string read(string prefix);
 extern void set_console_color(int color);
+extern void clear_screen();
+extern void print_logo();
