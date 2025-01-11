@@ -152,9 +152,13 @@ bool load_game() {
         set_console_color(7);
         println("Proszę podać nazwę save do utworzenia/do załadowania, aby kontynuować rozgrywkę w JUAMP.");
 
-        current_save = ;
+        current_save = read("#");
 
-        auto config = toml::parse(full_save_name);
+        std::ifstream file(full_save_name);
+        if (!file.is_open()) {
+            return false;
+        }
+        auto config = toml::parse();
 
         name = config["name"].value_or("Unknown");
         age = config["age"].value_or(0);
