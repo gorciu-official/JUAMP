@@ -1,3 +1,5 @@
+// =================================== PRECOMIPILER ===================================
+
 #ifndef __cplusplus
 #error JUAMP is a C++ game.
 #endif
@@ -12,10 +14,28 @@
 #endif
 #endif
 
+// =================================== DEPENDENCIES ===================================
+
 #include "toml.hpp" // run building for the first time to fix error
 #include <iostream>
 
 typedef std::string string;
+
+// =================================== GAME DATA ===================================
+
+string name = "";
+string gender = "b"; // b - chłop, g - baba
+int age = 0;
+double money = 0;
+int reputation = 1000;
+
+// player atributtes
+int strenght = 0;
+int speed = 0;
+int inteligency = 0;
+int condition = 0;
+
+// =================================== INTERNALS ===================================
 
 void print(string what) {
     std::cout << what;
@@ -100,18 +120,71 @@ void pak() {
 #endif
 }
 
+void better_dts(double number) {
+    std::ostringstream oss;
+    oss << std::fixed << std::setprecision(2) << number;
+    std::string str = oss.str();
+    return str;
+}
+
 void print_logo() {
     string logo =  "\n    _____  _____  _____   _       ____    ____  _______   \n   |_   _||_   _||_   _| / \\     |_   \\  /   _||_   __ \\  \n     | |    | |    | |  / _ \\      |   \\/   |    | |__) |\n _   | |    | '    ' | / ___ \\     | |\\  /| |    |  ___/  \n| |__' |     \\ \\__/ /_/ /   \\ \\_  _| |_\\/_| |_  _| |_     \n`.____.'      `.__.'|____| |____||_____||_____||_____|\n";
     println(logo);
+}
+
+string read(string prefix) {
+    string pref = prefix + " ";
+    std::cout << pref;
+    string out;
+    std::getline(std::cin, out);
+    return out;
 }
 
 // =================================== SAVES ===================================
 
 string current_save = "";
 
-void load_game() {}
+void load_game() {
+    try {
+        clear_screen();
+        set_console_color(6);
+        print_logo();
+        set_console_color(7);
+        println("Proszę podać nazwę save do utworzenia/do załadowania, aby kontynuować rozgrywkę w JUAMP.");
 
-void save_game() {}
+        current_save = ;
+
+        auto config = toml::parse(full_save_name);
+
+        name = config["name"].value_or("Unknown");
+        age = config["age"].value_or(0);
+        money = config["money"].value_or(0.0f);
+        reputation = config["reputation"].value_or(0);
+        strenght = config["strenght"].value_or(0);
+        speed = config["speed"].value_or(0);
+        inteligency = config["inteligency"].value_or(0);
+        condition = config["condition"].value_or(0);
+    } catch (const toml::parse_error& err) {
+        return false;
+    }
+}
+
+void save_game() {
+    toml::table save{
+        {"name", name},
+        {"age", age},
+        {"money", money},
+        {"reputation", reputation},
+        {"strenght", strenght},
+        {"speed", condition},
+        {"inteligency", inteligency},
+        {"condition", condition}
+    };
+    
+    string full_save_name = "saves" + current_save + ".toml";
+    std::ofstream file(full_save_name);
+    file << full_save_name;
+}
 
 // =================================== GAME ===================================
 
