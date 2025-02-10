@@ -4,6 +4,8 @@
 #error JUAMP is a C++ game.
 #endif
 
+#define JUAMP_VERSION "9.0.0"
+
 // =================================== DEPENDENCIES ===================================
 
 #include "toml.hpp" // run building for the first time to fix error
@@ -26,15 +28,21 @@
 string name = "";
 string gender = "b"; // b - chłop, g - baba
 int age = 0;
-double money = 0;
+double money = 1000;
 int reputation = 1000;
 string location_id = "";
+double lvl = 0;
+int hunger = 0;
 
 // player atributtes
 int strenght = 0;
 int speed = 0;
 int inteligency = 0;
 int condition = 0;
+
+// player's pets
+int dogs = 0;
+int cats = 0;
 
 // =================================== INTERNALS ===================================
 
@@ -129,8 +137,9 @@ string better_dts(double number) {
 }
 
 void print_logo() {
-    string logo =  "\n    _____  _____  _____   _       ____    ____  _______   \n   |_   _||_   _||_   _| / \\     |_   \\  /   _||_   __ \\  \n     | |    | |    | |  / _ \\      |   \\/   |    | |__) |\n _   | |    | '    ' | / ___ \\     | |\\  /| |    |  ___/  \n| |__' |     \\ \\__/ /_/ /   \\ \\_  _| |_\\/_| |_  _| |_     \n`.____.'      `.__.'|____| |____||_____||_____||_____|\n";
+    string logo =  "\n    _____  _____  _____   _       ____    ____  _______   \n   |_   _||_   _||_   _| / \\     |_   \\  /   _||_   __ \\  \n     | |    | |    | |  / _ \\      |   \\/   |    | |__) |\n _   | |    | '    ' | / ___ \\     | |\\  /| |    |  ___/  \n| |__' |     \\ \\__/ /_/ /   \\ \\_  _| |_\\/_| |_  _| |_     \n`.____.'      `.__.'|____| |____||_____||_____||_____|";
     println(logo);
+    println("Wersja: " + string(JUAMP_VERSION) + "\n");
 }
 
 std::map<string, string> utf8_to_lower_map = {
@@ -206,6 +215,10 @@ bool load_game() {
         inteligency = config["inteligency"].value_or(0);
         condition = config["condition"].value_or(0);
         location_id = config["location"].value_or("");
+        lvl = config["lvl"].value_or(0);
+        hunger = config["lvl"].value_or(0);
+        dogs = config["dogs"].value_or(0);
+        cats = config["cats"].value_or(0);
 
         if (name == "Unknown") return load_game();
 
@@ -225,7 +238,11 @@ void save_game() {
         {"speed", condition},
         {"inteligency", inteligency},
         {"condition", condition},
-        {"location", location_id}
+        {"location", location_id},
+        {"lvl", lvl},
+        {"hunger", hunger},
+        {"dogs", dogs},
+        {"cats", cats}
     };
 
 #ifdef _WIN32
@@ -237,6 +254,23 @@ void save_game() {
     string full_save_name = "saves/" + current_save + ".toml";
     std::ofstream file(full_save_name);
     file << save;
+}
+
+void add_hunger(int what) {
+    hunger += what;
+    if (hunger > 75) {
+        set_console_color(4);
+        println("Jesteś głodny!");
+        set_console_color(7);
+    }
+    if (hunger > 100) {
+        name = "Unknown";
+        save_game();
+        set_console_color(4);
+        println("Straciłeś grę bo za długo byłeś głodny.");
+        set_console_color(7);
+        while (true) continue;
+    }
 }
 
 // =================================== GAME ===================================
@@ -263,7 +297,7 @@ int main() {
         print_logo();
         set_console_color(7);
 
-        location_id = "gowno1";
+        location_id = "plac.main.centered";
 
         while (true) {
             set_console_color(3);
