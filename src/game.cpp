@@ -285,7 +285,7 @@ void handle_game(bool need_to_start_dialogue) {
         set_console_color(7);
         println("Wpisz \"pomoc\" w razie wątpliwości.\n");
 
-        if (need_to_start_dialogue) talk("samouczek-piotr");
+        if (need_to_start_dialogue) talk("samouczek-piotr", true);
 
         display_location(get_location_by_id(location_id));
 
