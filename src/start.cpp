@@ -323,7 +323,7 @@ int main() {
             println("  Płeć ma tym razem znaczenie, kobiety szybciej się męczą (jest więcej różnic). Wybierz b/g.");
             gender = read("#");
 
-            if (gender != "b" && gender != "c") {
+            if (gender != "b" && gender != "g") {
                 set_console_color(1);
                 println("Raczej niepoprawna ta twoja płeć.");
                 set_console_color(7);

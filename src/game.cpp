@@ -37,8 +37,8 @@ int make_talking_selection(std::vector<string> vc) {
     }
 }
 
-void talk(string schema) {
-    if (schema == "samouczek-piotr" && location_id == "plac.main.centered") {
+void talk(string schema, bool gameMade = false) {
+    if (schema == "samouczek-piotr" && location_id == "plac.main.centered" && gameMade == true) {
         age = 15;
         println("\"Witaj wędrowcze. Widzę, że pozwoliłeś sobie wejść do naszego miasta. Jeżeli czytałeś o naszym mieście, a śmiem");
         println("twierdzić, że tak nie było, zapewne wiesz że jestem Piotr i pomagam turystom przeżyć na tej wyspie - to moja praca!");
@@ -199,7 +199,7 @@ void do_command(string command) {
         return;
     }
 
-    if (base_command == "umiejetnosci") {
+    if (base_command == "umiejetnosci" || base_command == "umi") {
         set_console_color(6);
         println("Kończenie zaplanowane na aktualizację 9.1.0");
         set_console_color(7);
@@ -209,7 +209,12 @@ void do_command(string command) {
 
     if (base_command == "trenuj") {
         if (location_id == "plac.treninghall") {
-            if (arg1 != "sila" && arg1 != "szybkosc" && arg1 != "inteligencja" && arg1 != "kondycja") return;
+            if (arg1 != "sila" && arg1 != "szybkosc" && arg1 != "inteligencja" && arg1 != "kondycja") {
+                set_console_color(1);
+                println("Nie masz takiej umiejętności (`umi`)");
+                set_console_color(7);
+                return;
+            }
             if (arg1 == "sila") strenght++;
             if (arg1 == "szybkosc") speed++;
             if (arg1 == "inteligencja") speed++;
@@ -229,7 +234,7 @@ void do_command(string command) {
     if (base_command == "lista") {
         if (location_id == "ropucha") {
             println("gazeta - 3.50$       bulka - 1.20$");
-            println("tymsok - 1.99$");
+            println("tymsok - 1.99$       hotdog - 1.00$");
         } else {
             set_console_color(1);
             println("Nie możesz tu nic kupić");
@@ -240,7 +245,11 @@ void do_command(string command) {
 
     if (base_command == "kup") {
         if (location_id == "ropucha") {
-            if (arg1 != "gazeta" && arg1 != "tymsok" && arg1 != "bułka") return;
+            if (arg1 != "gazeta" && arg1 != "tymsok" && arg1 != "bułka" && arg1 != "hotdog") {
+                set_console_color(1);
+                println("Podaj poprawną nazwę przedmiotu (`lista`).");
+                set_console_color(7);
+            }
             if (arg1 == "gazeta") {
                 money -= 3.50;
             }
@@ -250,6 +259,9 @@ void do_command(string command) {
             }
             if (arg1 == "bulka") {
                 money -= 1.20;
+            }
+            if (arg1 == "hotdog") {
+                money -= 1;
             }
             set_console_color(3);
             println("Kupiono przedmiot.");
