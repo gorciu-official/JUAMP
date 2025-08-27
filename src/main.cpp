@@ -9,10 +9,7 @@
 #include <regex>
 
 #include "declarations.hpp"
-
-/* ================================ VERSION ================================ */
-
-#define JUAMP_VERSION "8.0.0"
+#include "constants.hpp"
 
 /* ================================ FAMILY ================================ */
 
@@ -33,45 +30,11 @@ int reputation = 100;
 
 /* ================================ INTERNALS ================================ */
 
-int current_foreground;
-int current_background;
-
 int get_random_number() {
     static std::mt19937 gen(static_cast<unsigned int>(std::time(nullptr))); 
     std::uniform_int_distribution<> dist(1, 10);
 
     return dist(gen);
-}
-
-void set_console_color(int foreground, int background) {
-#ifdef _WIN32
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    SetConsoleTextAttribute(hConsole, (background << 4) | foreground);
-#endif
-#ifdef __linux__
-    string fg = std::to_string(30 + foreground);
-    string bg = std::to_string(40 + background);
-    std::cout << "\033[" << fg << ";" << bg << "m";
-#endif
-    current_background = background;
-    current_foreground = foreground;
-}
-
-void print(const string& text) {
-    std::cout << text;
-}
-
-void println(const string& text) {
-    std::cout << text << std::endl;
-}
-
-void printnl() {
-    std::cout << std::endl;
-}
-
-int print_message_box(const string& title, const string& desc) {
-    std::cout << title << " - " << desc << std::endl;
-    return 0;
 }
 
 void add_one_hunger() {
@@ -87,89 +50,6 @@ void add_one_hunger() {
         while (true) {
             continue;
         }
-    }
-}
-
-string read(const string prefix, int rfg, int rbg) {
-    add_one_hunger();
-
-    int cfg = current_foreground;
-    int cbg = current_background;
-
-    print(prefix);
-
-    set_console_color(rfg, rbg);
-
-    string readed;
-    std::getline(std::cin, readed);
-
-    set_console_color(cfg, cbg);
-
-    return readed;
-}
-
-void clear_screen() {
-#ifdef _WIN32
-    system("cls");
-#else
-    system("clear");
-#endif
-    set_console_color(4, 0);
-    println("JUAMP - symulator życia");
-    print("Aktualna wersja: ");
-    println(JUAMP_VERSION);
-    set_console_color(7, 0);
-}
-
-void pause_nul() {
-#ifdef _WIN32
-    system("pause > nul");
-#elif __linux__
-    system("read -s -n 1");
-#endif
-}
-
-string repeat_string(const string& str, int times) {
-    string result = "";
-    for (int i = 0; i < times; i++) {
-        result += str;
-    }
-    return result;
-}
-
-void talk(string who, string what) {
-    set_console_color(3, 0);
-    print("<" + who + "> ");
-    set_console_color(7, 0);
-    std::string replacement = "\n" + repeat_string(" ", who.length());
-    std::string result = std::regex_replace(what, std::regex("\n"), replacement);
-    println(result);
-}
-
-int get_console_width() {
-#ifdef _WIN32
-    CONSOLE_SCREEN_BUFFER_INFO csbi;
-    int width = 80; // Default width
-    if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi)) {
-        width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
-    }
-    return width;
-#elif __linux__
-    struct winsize w;
-    ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-    return w.ws_col;
-#else
-    return 80;
-#endif
-}
-
-void print_center_line(string what, const char placeholder = ' ') {
-    int width = get_console_width();
-    int padding = (width - what.length()) / 2;
-    if (padding > 0) {
-        std::cout << std::string(padding, placeholder) << what << std::endl;
-    } else {
-        std::cout << what << std::endl;
     }
 }
 
@@ -193,44 +73,10 @@ void remove_reputation(int what) {
     reputation -= what;
 }
 
-/* ================================ MONEY ================================ */
+/* ================================ JUAMP LAUNCHER ================================ */
 
-void add_money(double money2) {
-    money = money + money2;
-    int cfg = current_foreground;
-    int cbg = current_background;
-    set_console_color(6, 0);
-    string startgender;
-    if (gender == 1) {
-        startgender = "Otrzymałaś ";
-    } else {
-        startgender = "Otrzymałeś ";
-    }
-    print_center_line(startgender + std::to_string(money2) + "$. Masz teraz aż " + std::to_string(money));
-    
-    set_console_color(cfg, cbg);
-}
-
-void remove_money(double money2) {
-    money = money - money2;
-    int cfg = current_foreground;
-    int cbg = current_background;
-    set_console_color(6, 0);
-    string startgender;
-    if (gender == 1) {
-        startgender = "Zapłaciłaś lub straciłaś ";
-    } else {
-        startgender = "Zapłaciłeś lub straciłeś ";
-    }
-    print_center_line(startgender + std::to_string(money2) + "$. Masz teraz tylko " + std::to_string(money));
-    
-    set_console_color(cfg, cbg);
-}
-
-/* ================================ SAVE SYSTEM ================================ */
-
-string DEFAULT_SAVE_FILE = "saves/savegame.toml";
-string SAVE_FILE = DEFAULT_SAVE_FILE;
+string DEFAULT_SAVE_NAME = "savegame";
+string SAVE_FILE = "saves/" + DEFAULT_SAVE_NAME + ".toml";
 
 #include "toml.hpp" // if you see errors, do `make download_toml` and reopen tab
 
@@ -286,7 +132,8 @@ bool load_game() {
     system("mkdir -p saves");
 #endif
     
-    SAVE_FILE = "saves/" + read("> ") + ".toml";
+    const auto save_file_choice = read("> ");
+    SAVE_FILE = "saves/" + (save_file_choice == "" ? DEFAULT_SAVE_NAME : save_file_choice) + ".toml";
 
     std::ifstream file(SAVE_FILE);
     if (!file.is_open()) {
@@ -321,13 +168,16 @@ bool load_game() {
     return true;
 }
 
-/* ================================ PLACES ================================ */
+/* ================================ EXTERNS ================================ */
 
 extern void handle_ropucha();
 extern void handle_market_hall();
 extern void handle_casino();
 extern void handle_work();
 extern void handle_train_station();
+extern void handle_home_talking();
+
+/* ================================ PLACES ================================ */
 
 void handle_outside() {
     if (!was_outside_before) {
@@ -385,8 +235,6 @@ void handle_outside() {
     }
 }
 
-extern void handle_home_talking();
-
 void handle_home() {
     clear_screen();
     while (true) {
@@ -430,7 +278,7 @@ void handle_home() {
     }
 }
 
-/* ================================ MAIN PROGRAM ================================ */
+/* ================================ GAME ENTRY ================================ */
 
 int main() {
 #ifdef _WIN32

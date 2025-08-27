@@ -67,7 +67,7 @@ try:
         objFiles = []
 
         print("\033[1mCompiling...\033[0m")
-        for srcfile in src.glob('*.cpp'):
+        for srcfile in src.glob('**/*.cpp'):
             if useSysTmp:
                 temp = Path('/tmp') if sys.platform != 'win32' else Path('C:/temp')
             else:

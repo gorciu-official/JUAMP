@@ -1,15 +1,11 @@
-#include "declarations.hpp"
+#include "../declarations.hpp"
+#include "../constants.hpp"
 
 // Newspaper only available in the "Ropucha" shop
 extern void handle_newspaper();
 
 // src/talking.cpp
 extern void handle_ropucha_talking();
-
-#define SHOP_ROPUCHA_CENA_BAGIETKA 3.50
-#define SHOP_ROPUCHA_PUNKTY_BAGIETKA 16
-
-#define SHOP_ROPUCHA_CENA_GAZETA 1.50
 
 void handle_ropucha() {
     while (true) {

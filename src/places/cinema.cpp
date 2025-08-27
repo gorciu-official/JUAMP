@@ -1,4 +1,4 @@
-#include "declarations.hpp"
+#include "../declarations.hpp"
 
 #define KINO_CENA 45
 

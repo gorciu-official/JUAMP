@@ -1,14 +1,8 @@
-#include "declarations.hpp"
+#include "../declarations.hpp"
+#include "../constants.hpp"
 
 extern void handle_cinema();
 extern void handle_restaurant();
-
-#define NOPSANIA_SHOP_KAWA_CENA 12.00
-#define NOPSANIA_SHOP_KAWA_PUNKTY 8
-#define NOPSANIA_SHOP_HERBATA_CENA 6.00
-#define NOPSANIA_SHOP_HERBATA_PUNKTY 5
-#define NOPSANIA_SHOP_WODA_CENA 7.00
-#define NOPSANIA_SHOP_WODA_PUNKTY 12
 
 void handle_nopsania_shop() {
     while (true) {

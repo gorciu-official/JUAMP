@@ -50,3 +50,12 @@ extern void talk(string who, string what);
 
 extern void remove_reputation(int what);
 extern void add_reputation(int what);
+
+extern string read(const string prefix, int rfg, int rbg);
+extern void clear_screen();
+extern void talk(string who, string what);
+extern void print_center_line(string what, const char placeholder = ' ');
+extern int print_message_box(const string& title, const string& desc);
+
+extern int current_foreground;
+extern int current_background;
