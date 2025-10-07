@@ -57,5 +57,10 @@ extern void talk(string who, string what);
 extern void print_center_line(string what, const char placeholder = ' ');
 extern int print_message_box(const string& title, const string& desc);
 
+extern void make_directory(std::string dirname);
+
 extern int current_foreground;
 extern int current_background;
+
+extern bool has_reputation_before;
+extern int reputation;

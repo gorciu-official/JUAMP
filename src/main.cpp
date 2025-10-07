@@ -1,8 +1,6 @@
 /* ================================ INCLUDES ================================ */
 
 #include <iostream>
-#include <random>
-#include <ctime>
 #include <string>
 #include <fstream>
 #include <vector>
@@ -28,57 +26,12 @@ int age = 12;
 int gender = 2; // 1 - kobieta, 2 - mężczyzna (mezczyzna > kobita w tej grze)
 int reputation = 100;
 
-/* ================================ INTERNALS ================================ */
-
-int get_random_number() {
-    static std::mt19937 gen(static_cast<unsigned int>(std::time(nullptr))); 
-    std::uniform_int_distribution<> dist(1, 10);
-
-    return dist(gen);
-}
-
-void add_one_hunger() {
-    hunger++;
-    if (hunger == 75) {
-        print_message_box("Uwaga!", "Jesteś głodny! Może czas pójść na halę targową i kupić coś do jedzenia.");
-    }
-    if (hunger == 90) {
-        print_message_box("OSTATNIE OSTRZEŻENIE!", "Jesteś naprawdę głodny. Musisz kupić coś do jedzenia. Jeżeli nie zareagujesz na to ostrzeżenie, Twoja rozgrywka może się bezpowrotnie skończyć.");
-    }
-    if (hunger > 115) {
-        print_message_box("Rozgrywka zakończona!", "Zignorowałeś ostrzeżenia dotyczące głodu twojej postaci. Nie jesteś w stanie kontynuować rozgrywki.");
-        while (true) {
-            continue;
-        }
-    }
-}
-
-/* ================================ REPUTATION ================================ */
-
-void add_reputation(int what) {
-    if (!has_reputation_before) {
-        int cfg = current_foreground;
-        int cbg = current_background;
-        set_console_color(2, 0);
-        println("Właśnie zdobyłeś pierwsze punkty reputacji. Reputacja bezpośrednio odbija się na zachowanie");
-        println("bohaterów gry, zwłaszcza krytycznej rodziny. Jeżeli masz niską reputację, istnieje nawet szansa,");
-        println("że szef w pracy odmówi zatrudnienia Ciebie. Dbaj o reputację jak o własne życie.");
-        set_console_color(cfg, cbg);
-        has_reputation_before = true;
-    }
-    reputation += what;
-}
-
-void remove_reputation(int what) {
-    reputation -= what;
-}
-
 /* ================================ JUAMP LAUNCHER ================================ */
 
 string DEFAULT_SAVE_NAME = "savegame";
 string SAVE_FILE = "saves/" + DEFAULT_SAVE_NAME + ".toml";
 
-#include "toml.hpp" // if you see errors, do `make download_toml` and reopen tab
+#include "toml.hpp" // if you see errors, do `make download_toml` and reopen Visual Studio Code tab
 
 bool save_game() {
     toml::table save_data{
@@ -126,11 +79,7 @@ bool load_game() {
     print_center_line("Jeżeli dopiero zaczynasz, wymyśl nazwę save do nowej gry (może być puste)");
     printnl();
 
-#ifdef _WIN32
-    system("if not exist saves mkdir saves");
-#else
-    system("mkdir -p saves");
-#endif
+    make_directory("saves");
     
     const auto save_file_choice = read("> ");
     SAVE_FILE = "saves/" + (save_file_choice == "" ? DEFAULT_SAVE_NAME : save_file_choice) + ".toml";
