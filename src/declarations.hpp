@@ -64,3 +64,11 @@ extern int current_background;
 
 extern bool has_reputation_before;
 extern int reputation;
+
+extern void handle_ropucha();
+extern void handle_market_hall();
+extern void handle_casino();
+extern void handle_work();
+extern void handle_train_station();
+extern void handle_home_talking();
+extern void switch_to_utf8();

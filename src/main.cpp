@@ -117,122 +117,12 @@ bool load_game() {
     return true;
 }
 
-/* ================================ EXTERNS ================================ */
-
-extern void handle_ropucha();
-extern void handle_market_hall();
-extern void handle_casino();
-extern void handle_work();
-extern void handle_train_station();
-extern void handle_home_talking();
-
-/* ================================ PLACES ================================ */
-
-void handle_outside() {
-    if (!was_outside_before) {
-        printnl();
-        set_console_color(2, 0);
-        print_center_line("Witaj na zewnątrz! Stąd możesz dostać się do każdego miejsca, jednak są to tylko podstawowe miejsca.");
-        print_center_line("Do reszty możesz dostać się tylko poprzez ulice.");
-        was_outside_before = true;
-    }
-    while (true) {
-        printnl();
-
-        if (get_random_number() % 6 == 3) {
-            talk("Bezdomny", "Dasz mi 5 dolarów na chleb?");
-            println("Możesz zaakceptować ofertę pisząc T, lub odrzucić pisząc cokolwiek innego.");
-            string readed = read("> ", 2);
-            if (readed == "t" || readed == "T") {
-                remove_money(5);
-                add_reputation(1);
-                talk("Bezdomny", "Dzięki!");
-            }
-
-            continue;
-        }
-
-        set_console_color(3, 0);
-        println("Jesteś na dworze!");
-        set_console_color(7, 0);
-        println("  1 - Wróć do domu");
-        println("  2 - Odwiedź sklepik \"Ropucha\"");
-        println("  3 - Idź na halę targową");
-        println("  4 - Idź do kasyna");
-        println("  5 - Idź na dworzec ");
-
-        string readed = read("> ", 2);
-        if (readed == "1") {
-            return;
-        } else if (readed == "2") {
-            handle_ropucha();
-            continue;
-        } else if (readed == "3") {
-            handle_market_hall();
-            continue;
-        } else if (readed == "4") {
-            handle_casino();
-            continue;
-        } else if (readed == "5") {
-            handle_train_station();
-            continue;
-        }
-
-        set_console_color(4, 0);
-        println("Niepoprawny numer/znak");
-        set_console_color(7, 0);
-    }
-}
-
-void handle_home() {
-    clear_screen();
-    while (true) {
-        printnl();
-
-        if (money < 0) {
-            set_console_color(7, 0);
-            talk("Mama", "JAK ŚMIAŁEŚ SIĘ ZADŁUŻYĆ? TO POWAŻNY PROBLEM DLA NASZEJ RODZINY! WSTYD NA CAŁĄ MIEJSCOWOŚĆ!\nRozumiem że mamy tu wiele fajnych rzeczy, ale nie możemy sobie na nie pozwolić tak często. Lepiej zarabiać\n pieniądze, a nie wydawać je na głupoty! Wynocha do pracy!");
-            remove_reputation(3);
-            handle_work();
-            continue;
-        }
-
-        if (money < 30) {
-            set_console_color(7, 0);
-            talk("Tata", "Mama będzie miała dość spory problem, jeżeli nie zarobisz pieniędzy. Musisz coś zrobić, aby zarobić pieniądze.\nWiesz jak mama potrafi się zdenerwować, kiedy nie masz pieniędzy.\n Lepiej zacznij działać, zanim będzie za późno. Ubierz się i idź do pracy.");
-            Sleep(3000);
-            handle_work();
-            continue;
-        }
-
-        set_console_color(3, 0);
-        println("Jesteś w domu!");
-        set_console_color(7, 0);
-        println("  1 - Wyjdź na zewnątrz");
-        println("  2 - Zagadaj do kogoś");
-        println("  E - Wyjdź z gry");
-
-        string readed = read("> ", 2);
-        if (readed == "1") {
-            handle_outside();
-        } else if (readed == "2") {
-            handle_home_talking();
-        } else if (readed == "E") {
-            return;
-        } else {
-            set_console_color(4, 0);
-            println("Niepoprawny numer/znak");
-            set_console_color(7, 0);
-        }
-    }
-}
-
 /* ================================ GAME ENTRY ================================ */
 
+extern void handle_home();
+
 int main() {
-#ifdef _WIN32
-    system("chcp 65001 > nul");
-#endif
+    switch_to_utf8();
     clear_screen();
 
     bool needConfig = !load_game();
