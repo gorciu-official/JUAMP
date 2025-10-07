@@ -20,7 +20,7 @@ Just install `g++` from your distribution's package manager (if needed). Then yo
 
 ### Windows building
 
-***First of all, do not use windows, but if you must:***
+***First of all, do not use Windows, but if you have to:***
 
 DO NOT USE `mingw-32`! IT IS AN ARCHAIC SOFTWARE AND CAUSES PROBLEMS WITH BUILDING JUAMP! Instead, use `mingw-w64` from `winlibs.com`.
 
@@ -31,3 +31,9 @@ Here is how to check are you using `mingw-32`. Run this command:
 If your version looks like `<random shit moment>-w64-mingw32` you are good to build JUAMP. If it prints `mingw32`, UPGRADE RIGHT NOW! Download `mingw-w64` from `winlibs.com`, and add this to your path.
 
 Then you are good to run `python3 build.py`.
+
+## Additional building tips
+
+1. You can use `make` instead of `python3 build.py`. It runs the Python script under the hood
+2. Building to MacOS/iOS/iPadOS/Android is **currently not possible** and the code is not optimized for supporting these platforms. I recommend you to don't even try to build for these operating systems, unless you want to do a complete refactor.
+3. Never compile with `mingw-32`, it'll cause problems with dependencies, so please - don't use it.
