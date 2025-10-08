@@ -3,6 +3,8 @@
 extern void handle_outside();
 
 void handle_home() {
+    if (age < 14) check_school_penalty();
+    
     clear_screen();
     while (true) {
         printnl();

@@ -1,4 +1,4 @@
-#include "declarations.hpp"
+#include "../declarations.hpp"
 
 void add_reputation(int what) {
     if (!has_reputation_before) {

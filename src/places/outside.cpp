@@ -9,6 +9,8 @@ void handle_outside() {
         was_outside_before = true;
     }
     while (true) {
+        if (age < 14) check_school_penalty();
+
         printnl();
 
         if (get_random_number() % 6 == 3) {
@@ -32,6 +34,7 @@ void handle_outside() {
         println("  3 - Idź na halę targową");
         println("  4 - Idź do kasyna");
         println("  5 - Idź na dworzec ");
+        println(std::string("  6 - Idź do szkoły") + (age > 14 ? " [zablokowane]" : ""));
 
         string readed = read("> ", 2);
         if (readed == "1") {
@@ -47,6 +50,15 @@ void handle_outside() {
             continue;
         } else if (readed == "5") {
             handle_train_station();
+            continue;
+        } else if (readed == "6") {
+            if (age < 14) {
+                handle_school();
+            } else {
+                set_console_color(4, 0);
+                println("Nie musisz iść do szkoły, bo masz więcej niż 14 lat.");
+                set_console_color(7, 0);
+            }
             continue;
         }
 

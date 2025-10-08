@@ -5,7 +5,6 @@
 #include <fstream>
 #include <vector>
 #include <regex>
-
 #include "declarations.hpp"
 #include "constants.hpp"
 
@@ -23,15 +22,17 @@ int money = 1000;
 string name = "";
 string city = "";
 int age = 12;
-int gender = 2; // 1 - kobieta, 2 - mężczyzna (mezczyzna > kobita w tej grze)
+int gender = 2; // 1 - female; 2 - male 
 int reputation = 100;
+int last_school_time = 0;
+bool was_at_school = false;
 
 /* ================================ JUAMP LAUNCHER ================================ */
 
 string DEFAULT_SAVE_NAME = "savegame";
 string SAVE_FILE = "saves/" + DEFAULT_SAVE_NAME + ".toml";
 
-#include "toml.hpp" // if you see errors, do `make download_toml` and reopen Visual Studio Code tab
+#include "toml.hpp"
 
 bool save_game() {
     toml::table save_data{
@@ -58,14 +59,9 @@ bool save_game() {
 #endif
 
     std::ofstream file(SAVE_FILE);
-
-    if (!file.is_open()) {
-        return false;
-    }
-
+    if (!file.is_open()) return false;
     file << save_data;
     file.close();
-
     return true;
 }
 
@@ -80,7 +76,6 @@ bool load_game() {
     printnl();
 
     make_directory("saves");
-    
     const auto save_file_choice = read("> ");
     SAVE_FILE = "saves/" + (save_file_choice == "" ? DEFAULT_SAVE_NAME : save_file_choice) + ".toml";
 
@@ -117,6 +112,126 @@ bool load_game() {
     return true;
 }
 
+/* ================================ NEW GAME QUESTIONS ================================ */
+
+void ask_player_name() {
+    set_console_color(3, 0);
+    print("Wybierz imię - ");
+    set_console_color(7, 0);
+    println("będzie ono używane w małej ilości, ale jednak jest potrzebne. Może");
+    println("to być Twoje prawdziwe imię, pseudonim, czy zupełnie wymyślona nazwa. Nie ma to znaczenia.");
+    while (true) {
+        name = read("# ");
+        if (name.empty()) {
+            set_console_color(4, 0);
+            println("Imię nie może być puste!");
+            set_console_color(7, 0);
+            continue;
+        }
+        if (name == "Mama" || name == "Tata" || name == "Brat" || name == "Siostra" || 
+            name == "Babcia" || name == "Dziadek") {
+            set_console_color(4, 0);
+            println("Imię nie może być takie jak nazwy członków rodziny!");
+            set_console_color(7, 0);
+            continue;
+        }
+        if (name == "JUAMP" || name == "juamp" || name == "Juamp" || 
+            name == "Gorciu" || name == "gorciu" || name == "Gorciu") {
+            println("Pogrzało Cię lekko mówiąc.");
+            continue;
+        }
+        break;
+    }
+}
+
+void ask_player_gender() {
+    printnl();
+    set_console_color(3, 0);
+    print("Wybierz płeć - ");
+    set_console_color(7, 0);
+    println("będzie ona używana głównie w dialogach i raczej nic nie zmieni w grze poza jedną rzeczą.");
+    println("Otóż kobiety mają mniej siły i praca zajmie im dłużej niż mężczyźnie. Wybierz mądrze.");
+    while (true) {
+        string gendersel = read("# ");
+        if (gendersel.empty()) {
+            set_console_color(4, 0);
+            println("Płeć nie może być pusta!");
+            set_console_color(7, 0);
+            continue;
+        }
+        if (gendersel != "Kobieta" && gendersel != "Mężczyzna" && gendersel != "Mezczyzna") {
+            set_console_color(4, 0);
+            println("Przyjmowane wartości to \"Kobieta\" lub \"Mężczyzna\" (z dużej litery).");
+            set_console_color(7, 0);
+            continue;
+        }
+        gender = (gendersel == "Kobieta") ? 1 : 2;
+        break;
+    }
+}
+
+string assign_random_city() {
+    std::vector<string> cities = {"Loresphread", "Applaypom", "Sersoponia", "Delaxer", "Bimalia"};
+    return cities[get_random_number() % cities.size()];
+}
+
+void describe_city(const string& city) {
+    set_console_color(2, 0);
+    if (city == "Loresphread") {
+        println("  Loresphread to niewielkie miasteczko położone w zachodniej");
+        println("  części kraju. Jest tam umiarkowany klimat, ale śnieg prawie");
+        println("  nigdy nie pada. Na ogół społeczność jest przyjazna i skierowana");
+        println("  na poznawanie nowych ludzi, również spoza okolicy.");
+    } else if (city == "Applaypom") {
+        println("  Applaypom to miasto, które jest znane z przemysłu i technologii.");
+        println("  W mieście znajduje się wiele firm, które produkują różne produkty");
+        println("  technologiczne. W mieście jest również wiele miejsc, w których");
+        println("  można się dobrze bawić. Według ludzi - miasto to \"krajowe Chiny\".");
+    } else if (city == "Sersoponia") {
+        println("  Serseponia to miasto, które jest znane z kultury i sztuki. W mieście");
+        println("  znajduje się wiele muzeów, galerii sztuki, teatrów i innych miejsc,");
+        println("  w których można się rozwijać w dziedzinie kultury. W mieście jest");
+        println("  również wiele gór, gdyż jest ono położone na południu kraju.");
+    } else if (city == "Delaxer") {
+        println("  Delaxer to mała wieś, która jest położona na wschodzie kraju.");
+        println("  Wioska jest znana z tego, że żyje tam wiele zwierząt, które można");
+        println("  spotkać na co dzień. Wioska jest również znana z tego, że jest tam");
+        println("  o wiele więcej pól, na których można uprawiać rośliny, niż w całej");
+        println("  reszcie kraju.");
+    } else if (city == "Bimalia") {
+        println("  Bimalia to drugie po Nopsanii największe miasto w kraju pod względem");
+        println("  liczby ludności. Jest to raj dla dorosłych. W mieście znajduje się wiele");
+        println("  klubów nocnych, restauracji, kin i innych miejsc, w których można spędzać");
+        println("  czas.");
+    } else {
+        println("Uncaught TypeError: Cannot read properties of undefined (reading \"description\")");
+        println(" at main:258:12");
+    }
+    set_console_color(7, 0);
+}
+
+void new_game_setup() {
+    printnl();
+    set_console_color(2, 0);
+    println("Witaj w JUAMP! Przed rozpoczęciem gry musisz odpowiedzieć na kilka pytań.");
+    println("Odpowiedzi na te pytania będą miały większy lub mniejszy wpływ na przebieg gry.");
+    printnl();
+
+    ask_player_name();
+    ask_player_gender();
+
+    printnl();
+    set_console_color(3, 0);
+    print("Twoje wylosowane miasto: ");
+    set_console_color(7, 0);
+    Sleep(1000);
+    city = assign_random_city();
+    println(city);
+    describe_city(city);
+    println("Kliknij dowolny klawisz, by przejść dalej.");
+    pause_nul();
+}
+
 /* ================================ GAME ENTRY ================================ */
 
 extern void handle_home();
@@ -126,116 +241,14 @@ int main() {
     clear_screen();
 
     bool needConfig = !load_game();
-    if (needConfig) {
-        printnl();
-        set_console_color(2, 0);
-        println("Witaj w JUAMP! Przed rozpoczęciem gry musisz odpowiedzieć na kilka pytań.");
-        println("Odpowiedzi na te pytania będą miały większy lub mniejszy wpływ na przebieg gry.");
-        printnl();
-        set_console_color(3, 0);
-        print("Wybierz imię - ");
-        set_console_color(7, 0);
-        println("będzie ono używane w małej ilości, ale jednak jest potrzebne. Może");
-        println("to być Twoje prawdziwe imię, pseudonim, czy zupełnie wymyślona nazwa. Nie ma to znaczenia.");
-        while (true) {
-            name = read("# ");
-            if (name.empty()) {
-                set_console_color(4, 0);
-                println("Imię nie może być puste!");
-                set_console_color(7, 0);
-                continue;
-            }
-            if (name == "Mama" || name == "Tata" || name == "Brat" || name == "Siostra" || name == "Babcia" || name == "Dziadek") {
-                set_console_color(4, 0);
-                println("Imię nie może być takie jak nazwy członków rodziny!");
-                set_console_color(7, 0);
-                continue;
-            }
-            if (name == "JUAMP" || name == "juamp" || name == "Juamp" || name == "Gorciu" || name == "gorciu" || name == "Gorciu") {
-                println("Pogrzało Cię lekko mówiąc.");
-                continue;
-            }
-            break;
-        }
-        printnl();
-        set_console_color(3, 0);
-        print("Wybierz płeć - ");
-        set_console_color(7, 0);
-        println("będzie ona używana głównie w dialogach i raczej nic nie zmieni w grze poza jedną rzeczą.");
-        println("Otóż kobiety mają mniej siły i praca zajmie im dłużej niż mężczyźnie. Wybierz mądrze.");
-        while (true) {
-            string gendersel = read("# ");
-            if (gendersel.empty()) {
-                set_console_color(4, 0);
-                println("Płeć nie może być pusta!");
-                set_console_color(7, 0);
-                continue;
-            }
-            if (gendersel != "Kobieta" && gendersel != "Mężczyzna" && gendersel != "Mezczyzna") {
-                set_console_color(4, 0);
-                println("Przyjmowane wartości to \"Kobieta\" lub \"Mężczyzna\" (z dużej litery).");
-                set_console_color(7, 0);
-                continue;
-            }
-
-            if (gendersel == "Kobieta") {
-                gender = 1;
-            } else {
-                gender = 2;
-            }
-            break;
-        }
-        printnl();
-        set_console_color(3, 0);
-        print("Twoje wylosowane miasto: ");
-        set_console_color(7, 0);
-        Sleep(1000);
-        std::vector<string> cities = {"Loresphread", "Applaypom", "Sersoponia", "Delaxer", "Bimalia"};
-        city = cities[get_random_number() % cities.size()];
-        println(city);
-        set_console_color(2, 0);
-        if (city == "Loresphread") {
-            println("  Loresphread to niewielkie miasteczko położone w zachodniej");
-            println("  części kraju. Jest tam umiarkowany klimat, ale śnieg prawie");
-            println("  nigdy nie pada. Na ogół społeczność jest przyjazna i skierowana");
-            println("  na poznawanie nowych ludzi, również spoza okolicy.");
-        } else if (city == "Applaypom") {
-            println("  Applaypom to miasto, które jest znane z przemysłu i technologii.");
-            println("  W mieście znajduje się wiele firm, które produkują różne produkty");
-            println("  technologiczne. W mieście jest również wiele miejsc, w których");
-            println("  można się dobrze bawić. Według ludzi - miasto to \"krajowe Chiny\".");
-        } else if (city == "Sersoponia") {
-            println("  Serseponia to miasto, które jest znane z kultury i sztuki. W mieście");
-            println("  znajduje się wiele muzeów, galerii sztuki, teatrów i innych miejsc,");
-            println("  w których można się rozwijać w dziedzinie kultury. W mieście jest");
-            println("  również wiele gór, gdyż jest ono położone na południu kraju.");
-        } else if (city == "Delaxer") {
-            println("  Delaxer to mała wieś, która jest położona na wschodzie kraju.");
-            println("  Wioska jest znana z tego, że żyje tam wiele zwierząt, które można");
-            println("  spotkać na co dzień. Wioska jest również znana z tego, że jest tam");
-            println("  o wiele więcej pól, na których można uprawiać rośliny, niż w całej");
-            println("  reszcie kraju.");
-        } else if (city == "Bimalia") {
-            println("  Bimalia to drugie po Nopsanii największe miasto w kraju pod względem");
-            println("  liczby ludności. Jest to raj dla dorosłych. W mieście znajduje się wiele");
-            println("  klubów nocnych, restauracji, kin i innych miejsc, w których można spędzać");
-            println("  czas.");
-        } else {
-            println("Uncaught TypeError: Cannot read properties of undefined (reading \"description\")");
-            println(" at main:258:12");
-            return 12;
-        }
-        set_console_color(7, 0);
-        println("Kliknij dowolny klawisz, by przejść dalej.");
-        pause_nul();
-    } else {
+    if (needConfig) new_game_setup();
+    else {
         set_console_color(7, 0);
         println("Gra wczytana pomyślnie.");
     }
 
     handle_home();
-
     set_console_color(7, 0);
-    while (!save_game()) continue; // tries to save game until it's saved
+    while (!save_game()) continue;
     return 0;
 }

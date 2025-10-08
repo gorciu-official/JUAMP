@@ -1,5 +1,7 @@
 #pragma once
 
+// === OS-dependent includes ===
+
 #ifdef __linux__
 #include <unistd.h>
 #include <termios.h>
@@ -13,9 +15,16 @@
 
 #define sleep_seconds(ms) Sleep(ms * 1000)
 
+// === OS-independent includes ===
+
 #include <iostream>
+#include <string>
+
+// === types ===
 
 typedef std::string string;
+
+// === save data ===
 
 extern int sisters;
 extern int brothers;
@@ -29,6 +38,12 @@ extern string name;
 extern string city;
 extern int age;
 extern int gender;
+
+// === ram data ===
+extern int last_school_time;
+extern bool was_at_school;
+
+// === unsorted ===
 
 extern int get_random_number();
 extern void set_console_color(int foreground, int background);
@@ -72,3 +87,5 @@ extern void handle_work();
 extern void handle_train_station();
 extern void handle_home_talking();
 extern void switch_to_utf8();
+extern void handle_school();
+extern void check_school_penalty();

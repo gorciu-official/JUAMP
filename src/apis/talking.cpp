@@ -1,4 +1,4 @@
-#include "declarations.hpp"
+#include "../declarations.hpp"
 #include <vector>
 
 void handle_home_talking() {

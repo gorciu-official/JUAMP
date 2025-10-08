@@ -1,4 +1,4 @@
-#include "declarations.hpp"
+#include "../declarations.hpp"
 
 void add_one_hunger() {
     hunger++;
