@@ -14,9 +14,9 @@ def ShowError(msg: str):
 ###################### CONST ########################
 true = True
 false = False
-NAME = "JUAMP"
 args = sys.argv
-
+use_gui = '--gui' in args
+NAME = "JUAMP" if not use_gui else "JUAMP-GUI"
 
 ##################### EXIT CODES #####################
 ErrorExit = 1
@@ -34,6 +34,8 @@ tmp = root/'tmp'
 clean = '--clean' in args or '-c' in args
 useSysTmp = '--notmp' in args
 CC = ["g++" if not '--useClang++' in args else 'clang++']
+if use_gui:
+    print("\033[38;5;208m\033[1m[ WARNING ]\033[0m GUI support in JUAMP is experimental")
 if '--static' in args or '-s' in args:
     print("\033[38;5;208m\033[1m[ WARNING ]\033[0m Static linking may not work if you do not have specific libraries installed, it is recommended to use dynamic linking (remove --static/-s flag)")
     CC.append('-static')
@@ -68,11 +70,27 @@ try:
 
         print("\033[1mCompiling...\033[0m")
         for srcfile in src.glob('**/*.cpp'):
+            if not use_gui and srcfile.name == 'gui.cpp':
+                continue
+
+            if use_gui and srcfile.name == 'juamp-main.cpp':
+                continue
+            
+            if use_gui and srcfile.name == 'console.cpp':
+                continue
+
             if useSysTmp:
                 temp = Path('/tmp') if sys.platform != 'win32' else Path('C:/temp')
             else:
                 temp = tmp
             pass
+
+            qt_flags = []
+            if use_gui:
+                try:
+                    qt_flags = sp.check_output(['pkg-config', '--cflags', '--libs', 'Qt6Widgets']).decode().split()
+                except sp.CalledProcessError:
+                    ShowError("You have a problem because pkg-config does not work on your machine. Either compile a CLI version of JUAMP or install required pkg-config binary.")
 
             temp.mkdir(parents=true, exist_ok=true)
             object_file = temp / (srcfile.stem + '.o')
@@ -80,9 +98,9 @@ try:
 
             ############################# ALIGMENT #############################
             print("\r" + " " * shutil.get_terminal_size().columns, end='', flush=True)
-            print(f"\r{srcfile.name} -> {object_file.name}".ljust(shutil.get_terminal_size().columns - 10), end='', flush=true)
-            sp.run([*CC, '-c', str(srcfile), '-o', str(object_file)], check=true)
-            print("...  Done" if sys.platform == 'win32' else "\033[32;1m... Done\033[0m", end='', flush=true)
+            print(f"\r{srcfile.name} -> {object_file.name}".ljust(shutil.get_terminal_size().columns - 10), end='', flush=True)
+            sp.run([*CC, '-c', str(srcfile), '-o', str(object_file), *qt_flags], check=True)
+            print("...  Done" if sys.platform == 'win32' else "\033[32;1m... Done\033[0m", end='', flush=True)
             time.sleep(0.3)
             #####################################################################
         pass
@@ -96,7 +114,7 @@ try:
         out = _bin/(f'{NAME}.elf' if sys.platform != 'win32' else f'{NAME}.exe')
         _bin.mkdir(parents=True, exist_ok=True)
 
-        print('\033[1mlinking and interlinking...\033[0m\n')
+        print('\033[1mlinking...\033[0m\n')
 
         maxlen = max(len(obj.name) for obj in objFiles)
 
@@ -120,7 +138,13 @@ try:
         thread.start()
 
         try:
-            sp.run([*CC, '-o', str(out), *map(str, objFiles)], check=True)
+            qt_flags = []
+            if use_gui:
+                try:
+                    qt_flags = sp.check_output(['pkg-config', '--cflags', '--libs', 'Qt6Widgets']).decode().split()
+                except sp.CalledProcessError:
+                    ShowError("You have a problem because pkg-config does not work on your machine. Either compile a CLI version of JUAMP or install required pkg-config binary.")
+            sp.run([*CC, '-o', str(out), *map(str, objFiles), *qt_flags], check=True)
         finally:
             stopSignal.set()
             thread.join()
@@ -178,6 +202,7 @@ try:
             print(f('32;1', '--run/-r:') + ' Runs the program after compilation')
             print(f('33;1', "--static/-s:" + '\033[0m compiles with static linking'))
             print(f('31;1', "--debug/-d:" + '\033[0m compiles with debug flags'))
+            print(f('35;1', '--gui') + '\033[0m compiles GUI version')
             print(f('38;5;10;1', '-o={value}/--opt={value}:'), "\033[0mSets the indicated compiler optimization level, available options: 0, 1, 2, 3")
             exit()
         if clean:

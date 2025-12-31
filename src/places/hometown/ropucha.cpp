@@ -1,5 +1,5 @@
-#include "../declarations.hpp"
-#include "../constants.hpp"
+#include "../../declarations.hpp"
+#include "../../constants.hpp"
 
 // Newspaper only available in the "Ropucha" shop
 extern void handle_newspaper();

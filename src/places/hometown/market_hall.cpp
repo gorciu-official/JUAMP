@@ -1,4 +1,4 @@
-#include "../declarations.hpp"
+#include "../../declarations.hpp"
 
 #define MARKET_HALL_BAGIETKA_CENA 4.50
 #define MARKET_HALL_BAGIETKA_PUNKTY 22

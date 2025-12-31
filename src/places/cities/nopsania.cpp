@@ -1,5 +1,5 @@
-#include "../declarations.hpp"
-#include "../constants.hpp"
+#include "../../declarations.hpp"
+#include "../../constants.hpp"
 
 extern void handle_cinema();
 extern void handle_restaurant();

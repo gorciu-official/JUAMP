@@ -1,4 +1,4 @@
-#include "../declarations.hpp"
+#include "../../declarations.hpp"
 
 #define RESTAURANT_PIZZA_CENA 10
 #define RESTAURANT_KEBAB_CENA 10

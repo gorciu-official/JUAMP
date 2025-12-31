@@ -199,7 +199,8 @@ void new_game_setup() {
 
 extern void handle_home();
 
-int main() {
+// gets executed by juamp-main.cpp or gui.cpp
+int juamp_main() {
     switch_to_utf8();
     clear_screen();
 
