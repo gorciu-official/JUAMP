@@ -28,7 +28,7 @@ void handle_casino() {
             set_console_color(7, CASINO_BACKGROUND);
             continue;
         }
-        if (money < bet_amount) {
+        if (player->money < bet_amount) {
             set_console_color(4, CASINO_BACKGROUND);
             println("Ostrzeżenie: zadłużasz się. Może czas przestać grać?");
             set_console_color(7, CASINO_BACKGROUND);
@@ -123,25 +123,25 @@ void handle_work() {
             earnings = 2000;
             time_spent = 5;
             hunger_increase = 2;
-            sleep_seconds(time_spent / gender);
+            sleep_seconds(time_spent / player->gender);
         } else if (job_response[0] == 'F' || job_response[0] == 'f') {
             println("Pracujesz w fabryce. To ciężka praca przy taśmie produkcyjnej.");
             earnings = 1500;
             time_spent = 7; 
             hunger_increase = 4;
-            sleep_seconds(time_spent / gender);
+            sleep_seconds(time_spent / player->gender);
         } else if (job_response[0] == 'K' || job_response[0] == 'k') {
             println("Pracujesz w KFC. Smażysz kurczaki i obsługujesz klientów.");
             earnings = 1000;
             time_spent = 4; 
             hunger_increase = 3;
-            sleep_seconds(time_spent / gender);
+            sleep_seconds(time_spent / player->gender);
         } else if (job_response[0] == 'M' || job_response[0] == 'm') {
             println("Pracujesz w McDonald's. Przygotowujesz burgery i obsługujesz klientów.");
             earnings = 1200;
             time_spent = 6;
             hunger_increase = 5;
-            sleep_seconds(time_spent / gender);
+            sleep_seconds(time_spent / player->gender);
         } else {
             set_console_color(4, 0);
             println("Wybierz poprawną pracę.");

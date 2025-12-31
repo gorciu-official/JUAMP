@@ -3,7 +3,7 @@
 #define KINO_CENA 45
 
 void handle_cinema() {
-    if (money < KINO_CENA) {
+    if (player->money < KINO_CENA) {
         set_console_color(4, 0);
         println("Nie masz wystarczająco pieniędzy, aby obejrzeć film.");
         return;

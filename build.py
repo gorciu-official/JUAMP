@@ -142,6 +142,8 @@ try:
         print(f'\n{sep}\n')
 
     def DownloadTomlPP():
+        if Path('src/toml.hpp').exists():
+            return
         print("\033[1mDownloading toml++\033[0m" if sys.platform != 'win32' else "Downloading toml++")
         try:
             sp.run(['curl', '-s', 'https://raw.githubusercontent.com/marzer/tomlplusplus/master/toml.hpp', '-o', 'src/toml.hpp'])

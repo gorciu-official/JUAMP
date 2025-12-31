@@ -16,27 +16,27 @@ void handle_nopsania_shop() {
         println("  4 - Wyjdź ze sklepu");
         string choice = read("> ");
         if (choice == "1") {
-            if (money < NOPSANIA_SHOP_KAWA_CENA) {
+            if (player->money < NOPSANIA_SHOP_KAWA_CENA) {
                 println("Nie masz wystarczająco pieniędzy na kawę.");
             } else {
                 remove_money(NOPSANIA_SHOP_KAWA_CENA);
-                hunger = hunger - NOPSANIA_SHOP_KAWA_PUNKTY;
+                player->hunger = player->hunger - NOPSANIA_SHOP_KAWA_PUNKTY;
                 println("Kupiłeś kawę.");
             }
         } else if (choice == "2") {
-            if (money < NOPSANIA_SHOP_HERBATA_CENA) {
+            if (player->money < NOPSANIA_SHOP_HERBATA_CENA) {
                 println("Nie masz wystarczająco pieniędzy na herbatę.");
             } else {
                 remove_money(NOPSANIA_SHOP_HERBATA_CENA);
-                hunger = hunger - NOPSANIA_SHOP_HERBATA_PUNKTY;
+                player->hunger = player->hunger - NOPSANIA_SHOP_HERBATA_PUNKTY;
                 println("Kupiłeś herbatę.");
             }
         } else if (choice == "3") {
-           if (money < NOPSANIA_SHOP_WODA_CENA) {
+           if (player->money < NOPSANIA_SHOP_WODA_CENA) {
                 println("Nie masz wystarczająco pieniędzy na wodę.");
             } else {
                 remove_money(NOPSANIA_SHOP_WODA_CENA);
-                hunger = hunger - NOPSANIA_SHOP_WODA_PUNKTY;
+                player->hunger = player->hunger - NOPSANIA_SHOP_WODA_PUNKTY;
                 println("Kupiłeś wodę.");
             }
         } else if (choice == "4") {

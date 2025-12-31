@@ -47,13 +47,13 @@ void handle_restaurant() {
 
             if (item_price == 0) continue;
             
-            if (money < item_price) {
+            if (player->money < item_price) {
                 println("Nie masz wystarczająco pieniędzy.");
                 return;
             }
 
             remove_money(item_price);
-            hunger = hunger - item_hunger_added;
+            player->hunger = player->hunger - item_hunger_added;
         }
     }
 }

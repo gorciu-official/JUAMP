@@ -3,13 +3,11 @@
 extern void handle_outside();
 
 void handle_home() {
-    if (age < 14) check_school_penalty();
-    
     clear_screen();
     while (true) {
         printnl();
 
-        if (money < 0) {
+        if (player->money < 0) {
             set_console_color(7, 0);
             talk("Mama", "JAK ŚMIAŁEŚ SIĘ ZADŁUŻYĆ? TO POWAŻNY PROBLEM DLA NASZEJ RODZINY! WSTYD NA CAŁĄ MIEJSCOWOŚĆ!\nRozumiem że mamy tu wiele fajnych rzeczy, ale nie możemy sobie na nie pozwolić tak często. Lepiej zarabiać\n pieniądze, a nie wydawać je na głupoty! Wynocha do pracy!");
             remove_reputation(3);
@@ -17,7 +15,7 @@ void handle_home() {
             continue;
         }
 
-        if (money < 30) {
+        if (player->money < 30) {
             set_console_color(7, 0);
             talk("Tata", "Mama będzie miała dość spory problem, jeżeli nie zarobisz pieniędzy. Musisz coś zrobić, aby zarobić pieniądze.\nWiesz jak mama potrafi się zdenerwować, kiedy nie masz pieniędzy.\n Lepiej zacznij działać, zanim będzie za późno. Ubierz się i idź do pracy.");
             Sleep(3000);

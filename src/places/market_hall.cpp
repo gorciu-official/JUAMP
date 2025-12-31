@@ -76,13 +76,13 @@ void handle_market_hall() {
 
         string readed = read("> ", 2);
         if (readed == "1") {
-            if (item_price > money) {
+            if (item_price > player->money) {
                 set_console_color(4, 0);
                 println("Nie stać cię na taki wydatek, ale wolisz się zadłużyć.");
                 set_console_color(7, 0);
             }
             remove_money(item_price);
-            hunger -= item_points;
+            player->hunger -= item_points;
             set_console_color(2, 0);
             println("Zakupiono pomyślnie!");
             set_console_color(7, 0);

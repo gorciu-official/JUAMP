@@ -22,26 +22,32 @@
 
 // === types ===
 
-typedef std::string string;
+using std::string;
+
+// === classes ===
+
+class Player {
+public:
+    Player();
+    int sisters;
+    int brothers;
+    bool was_outside_before;
+    bool was_talking_before;
+    bool has_reputation_before;
+    string last_talked_with;
+    int mum_tokens;
+    int hunger;
+    int money;
+    string name;
+    string city;
+    int age;
+    int gender;
+    int reputation;
+};
 
 // === save data ===
 
-extern int sisters;
-extern int brothers;
-extern bool was_outside_before;
-extern bool was_talking_before;
-extern string last_talked_with;
-extern int mum_tokens;
-extern int hunger;
-extern int money;
-extern string name;
-extern string city;
-extern int age;
-extern int gender;
-
-// === ram data ===
-extern int last_school_time;
-extern bool was_at_school;
+extern Player* player;
 
 // === unsorted ===
 
@@ -77,9 +83,6 @@ extern void make_directory(std::string dirname);
 extern int current_foreground;
 extern int current_background;
 
-extern bool has_reputation_before;
-extern int reputation;
-
 extern void handle_ropucha();
 extern void handle_market_hall();
 extern void handle_casino();
@@ -87,5 +90,3 @@ extern void handle_work();
 extern void handle_train_station();
 extern void handle_home_talking();
 extern void switch_to_utf8();
-extern void handle_school();
-extern void check_school_penalty();

@@ -7,13 +7,13 @@ void handle_train_station() {
     while (true) {
         printnl();
         set_console_color(3, 0);
-        println("Jesteś na dworcu PKP miasta " + city);
+        println("Jesteś na dworcu PKP miasta " + player->city);
         set_console_color(7, 0);
         println("  1 - Kup bilet");
         println("  2 - Wyjdź z dworca");
         string choice = read("> ");
         if (choice == "1") {
-            if (money < 30) {
+            if (player->money < 30) {
                 println("Nie masz wystarczająco pieniędzy na bilet.");
             } else {
                 int city_num = 0;

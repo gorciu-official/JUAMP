@@ -18,11 +18,11 @@ void handle_park() {
         if (choice == "1") {
             handle_park_talking();
         } else if (choice == "2") {
-            if (money < PARK_LODY_CENA) {
+            if (player->money < PARK_LODY_CENA) {
                 println("Nie masz wystarczająco pieniędzy na lody.");
             } else {
                 remove_money(PARK_LODY_CENA);
-                hunger = hunger - PARK_LODY_PUNKTY;
+                player->hunger = player->hunger - PARK_LODY_PUNKTY;
                 println("Kupiłeś lody.");
             }
         } else if (choice == "3") {

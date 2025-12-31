@@ -3,19 +3,19 @@
 
 void handle_home_talking() {
     printnl();
-    if (!was_talking_before) {
+    if (!player->was_talking_before) {
         set_console_color(2, 0);
         println("Rozmawiasz po raz pierwszy. Będziesz widział menu, z którego będziesz");
         println("mógł wybierać swoje odpowiedzi. Za każdym razem będziesz rozmawiał z inną");
         println("osobą. Rozmowa z mamą jest najlepsza, gdyż możesz tym sprawić, że");
         println("mama urodzi brata albo siostrę (dziwne, ale tak).");
-        was_talking_before = true;
+        player->was_talking_before = true;
     }
     set_console_color(7, 0);
     // 1. Mama; 2. Rodzeństwo; 3. Tata
-    if (last_talked_with == "Mama") {
-        last_talked_with = "Rodzeństwo";
-        if (brothers == 0 && sisters == 0) {
+    if (player->last_talked_with == "Mama") {
+        player->last_talked_with = "Rodzeństwo";
+        if (player->brothers == 0 && player->sisters == 0) {
             set_console_color(4, 0);
             println("Chciałeś porozmawiać z rodzeństwem, ale zdałeś sobie sprawę, że go nie masz.");
             set_console_color(7, 0);
@@ -29,11 +29,11 @@ void handle_home_talking() {
             set_console_color(7, 0);
             return;
         }
-    } else if (last_talked_with == "Rodzeństwo") {
-        last_talked_with = "Tata";
+    } else if (player->last_talked_with == "Rodzeństwo") {
+        player->last_talked_with = "Tata";
         println("Rozpoczynasz rozmowę z tatą.");
         while (true) {
-            mum_tokens++;
+            player->mum_tokens++;
             set_console_color(2, 0);
             print("1) ");
             set_console_color(7, 0);
@@ -67,27 +67,27 @@ void handle_home_talking() {
             }
         }
         return;
-    } else if (last_talked_with == "Tata") {
-        last_talked_with = "Mama";
+    } else if (player->last_talked_with == "Tata") {
+        player->last_talked_with = "Mama";
         println("Rozpoczynasz rozmowę z mamą.");
         while (true) {
-            mum_tokens++;
-            if (mum_tokens % 27 == 0) {
-                age++;
-                talk("Mama", "Wszystkiego najlepszego z okazji twoich już " + std::to_string(age) + " urodzin.\nCieszę się, że jesteś ze mną.");
+            player->mum_tokens++;
+            if (player->mum_tokens % 27 == 0) {
+                player->age++;
+                talk("Mama", "Wszystkiego najlepszego z okazji twoich już " + std::to_string(player->age) + " urodzin.\nCieszę się, że jesteś ze mną.");
                 break;
             }
-            if (mum_tokens % 100 == 0) {
+            if (player->mum_tokens % 100 == 0) {
                 int rn2 = get_random_number() % 2 + 1;
                 if (rn2 == 1) {
                     talk("Mama", "Chciałabym Ci coś powiedzieć. Jedziemy do szpitala.\nWygląda na to, że dzisiaj urodzę twojego brata.");
                     Sleep(5000);
-                    brothers++;
+                    player->brothers++;
                     break;
                 } else {
                     talk("Mama", "Chciałabym Ci coś powiedzieć. Jedziemy do szpitala.\nWygląda na to, że dzisiaj urodzę twoją siostrę.");
                     Sleep(5000);
-                    sisters++;
+                    player->sisters++;
                     break;
                 }
             }

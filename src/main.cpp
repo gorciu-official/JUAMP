@@ -7,49 +7,30 @@
 #include <regex>
 #include "declarations.hpp"
 #include "constants.hpp"
-
-/* ================================ FAMILY ================================ */
-
-int sisters = 0;
-int brothers = 0;
-bool was_outside_before = false;
-bool was_talking_before = false;
-bool has_reputation_before = false;
-string last_talked_with = "Mama";
-int mum_tokens = 0;
-int hunger = 0;
-int money = 1000;
-string name = "";
-string city = "";
-int age = 12;
-int gender = 2; // 1 - female; 2 - male 
-int reputation = 100;
-int last_school_time = 0;
-bool was_at_school = false;
+#include "toml.hpp"
 
 /* ================================ JUAMP LAUNCHER ================================ */
 
 string DEFAULT_SAVE_NAME = "savegame";
 string SAVE_FILE = "saves/" + DEFAULT_SAVE_NAME + ".toml";
-
-#include "toml.hpp"
+Player* player;
 
 bool save_game() {
     toml::table save_data{
-        {"sisters", sisters},
-        {"brothers", brothers},
-        {"was_outside_before", was_outside_before},
-        {"was_talking_before", was_talking_before},
-        {"has_reputation_before", has_reputation_before},
-        {"last_talked_with", last_talked_with},
-        {"mum_tokens", mum_tokens},
-        {"hunger", hunger},
-        {"money", money},
-        {"name", name},
-        {"city", city},
-        {"age", age},
-        {"gender", gender},
-        {"reputation", reputation}
+        {"sisters", player->sisters},
+        {"brothers", player->brothers},
+        {"was_outside_before", player->was_outside_before},
+        {"was_talking_before", player->was_talking_before},
+        {"has_reputation_before", player->has_reputation_before},
+        {"last_talked_with", player->last_talked_with},
+        {"mum_tokens", player->mum_tokens},
+        {"hunger", player->hunger},
+        {"money", player->money},
+        {"name", player->name},
+        {"city", player->city},
+        {"age", player->age},
+        {"gender", player->gender},
+        {"reputation", player->reputation}
     };
 
 #ifdef _WIN32
@@ -93,20 +74,20 @@ bool load_game() {
         return false;
     }
 
-    sisters = save_data["sisters"].value_or(0);
-    brothers = save_data["brothers"].value_or(0);
-    was_outside_before = save_data["was_outside_before"].value_or(was_outside_before);
-    was_talking_before = save_data["was_talking_before"].value_or(was_talking_before);
-    has_reputation_before = save_data["has_reputation_before"].value_or(has_reputation_before);
-    last_talked_with = save_data["last_talked_with"].value_or(last_talked_with);
-    mum_tokens = save_data["mum_tokens"].value_or(mum_tokens);
-    hunger = save_data["hunger"].value_or(hunger);
-    money = save_data["money"].value_or(money);
-    name = save_data["name"].value_or(name);
-    city = save_data["city"].value_or(city);
-    age = save_data["age"].value_or(age);
-    gender = save_data["gender"].value_or(gender);
-    reputation = save_data["reputation"].value_or(100);
+    player->sisters = save_data["player->sisters"].value_or(0);
+    player->brothers = save_data["player.brothers"].value_or(0);
+    player->was_outside_before = save_data["was_outside_before"].value_or(player->was_outside_before);
+    player->was_talking_before = save_data["was_talking_before"].value_or(player->was_talking_before);
+    player->has_reputation_before = save_data["has_reputation_before"].value_or(player->has_reputation_before);
+    player->last_talked_with = save_data["last_talked_with"].value_or(player->last_talked_with);
+    player->mum_tokens = save_data["mum_tokens"].value_or(player->mum_tokens);
+    player->hunger = save_data["hunger"].value_or(player->hunger);
+    player->money = save_data["money"].value_or(player->money);
+    player->name = save_data["name"].value_or(player->name);
+    player->city = save_data["city"].value_or(player->city);
+    player->age = save_data["age"].value_or(player->age);
+    player->gender = save_data["gender"].value_or(player->gender);
+    player->reputation = save_data["reputation"].value_or(100);
 
     clear_screen();
     return true;
@@ -121,22 +102,22 @@ void ask_player_name() {
     println("będzie ono używane w małej ilości, ale jednak jest potrzebne. Może");
     println("to być Twoje prawdziwe imię, pseudonim, czy zupełnie wymyślona nazwa. Nie ma to znaczenia.");
     while (true) {
-        name = read("# ");
-        if (name.empty()) {
+        player->name = read("# ");
+        if (player->name.empty()) {
             set_console_color(4, 0);
             println("Imię nie może być puste!");
             set_console_color(7, 0);
             continue;
         }
-        if (name == "Mama" || name == "Tata" || name == "Brat" || name == "Siostra" || 
-            name == "Babcia" || name == "Dziadek") {
+        if (player->name == "Mama" || player->name == "Tata" || player->name == "Brat" || player->name == "Siostra" || 
+            player->name == "Babcia" || player->name == "Dziadek") {
             set_console_color(4, 0);
             println("Imię nie może być takie jak nazwy członków rodziny!");
             set_console_color(7, 0);
             continue;
         }
-        if (name == "JUAMP" || name == "juamp" || name == "Juamp" || 
-            name == "Gorciu" || name == "gorciu" || name == "Gorciu") {
+        if (player->name == "JUAMP" || player->name == "juamp" || player->name == "Juamp" || 
+            player->name == "Gorciu" || player->name == "gorciu" || player->name == "Gorciu") {
             println("Pogrzało Cię lekko mówiąc.");
             continue;
         }
@@ -165,7 +146,7 @@ void ask_player_gender() {
             set_console_color(7, 0);
             continue;
         }
-        gender = (gendersel == "Kobieta") ? 1 : 2;
+        player->gender = (gendersel == "Kobieta") ? 1 : 2;
         break;
     }
 }
@@ -224,10 +205,10 @@ void new_game_setup() {
     set_console_color(3, 0);
     print("Twoje wylosowane miasto: ");
     set_console_color(7, 0);
-    Sleep(1000);
-    city = assign_random_city();
-    println(city);
-    describe_city(city);
+    sleep_seconds(1);
+    player->city = assign_random_city();
+    println(player->city);
+    describe_city(player->city);
     println("Kliknij dowolny klawisz, by przejść dalej.");
     pause_nul();
 }
