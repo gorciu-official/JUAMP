@@ -1,11 +1,15 @@
 // ------- QT IMPORTS -------
-
 #include <QApplication>
 #include <QWidget>
 #include <QMessageBox>
 #include <QTextEdit>
+#include <QLineEdit>
+#include <QVBoxLayout>
 #include <QInputDialog>
 #include <QString>
+#include <QMetaObject>
+#include <QWaitCondition>
+#include <QMutex>
 
 // ------- C++ STDLIB IMPORTS -------
 #include <string>
@@ -19,37 +23,81 @@
 // ------- JUAMP IMPORTS -------
 #include "constants.hpp"
 
-// ------- TYPES -------
 using std::string;
 
-// ------- BASE VARIABLES -------
-QTextEdit* consoleWidget;
-int current_foreground;
-int current_background;
+QTextEdit* consoleWidget = nullptr;
+QLineEdit* inputField = nullptr;
+QMutex inputMutex;
+QWaitCondition inputCondition;
+QString lastInput;
+bool inputReady = false;
 
-// ------- GUI IMPLEMENTATION OF CONSOLE.CPP -------
+string current_fg_hex = "#ffffff";
+string current_bg_hex = "#000000";
+int current_foreground = 7;
+int current_background = 0;
+
+string get_hex_color(int code) {
+    switch(code) {
+        case 0: return "#000000"; // Black
+        case 1: return "#aa0000"; // Red
+        case 2: return "#00aa00"; // Green
+        case 3: return "#aaaa00"; // Yellow
+        case 4: return "#0000aa"; // Blue
+        case 5: return "#aa00aa"; // Magenta
+        case 6: return "#00aaaa"; // Cyan
+        case 7: return "#ffffff"; // White
+        default: return "#ffffff";
+    }
+}
+
+// ------- GUI REPLACEMENTS -------
+
 void print(const std::string& text) {
     if (!consoleWidget) return;
+    
+    QString safeText = QString::fromStdString(text).toHtmlEscaped().replace("\n", "<br>");
+    QString html = 
+                    (current_background != 0) ? (QString("<span style='color:%1; background-color:%2; font-family:monospace;'>%3</span>")
+                   .arg(QString::fromStdString(current_fg_hex))
+                   .arg(QString::fromStdString(current_bg_hex))
+                   .arg(safeText)) : (QString("<span style='color:%1; font-family:monospace;'>%2</span>")
+                   .arg(QString::fromStdString(current_fg_hex))
+                   .arg(safeText));
 
-    QString qtText = QString::fromStdString(text);
-    QMetaObject::invokeMethod(consoleWidget, [qtText](){
-        consoleWidget->append(qtText);
-    }, Qt::QueuedConnection);
+    QMetaObject::invokeMethod(consoleWidget, "insertHtml", Qt::QueuedConnection, Q_ARG(QString, html));
+    QMetaObject::invokeMethod(consoleWidget, "ensureCursorVisible", Qt::QueuedConnection);
 }
 
 void println(const std::string& text) {
-    print(text + '\n');
+    print(text + "\n");
 }
 
 void printnl() {
     println("");
 }
 
-int get_console_width() {
-    return 800;
+int get_console_width() { return 80; }
+
+void set_console_color(int foreground, int background) {
+    current_fg_hex = get_hex_color(foreground);
+    current_bg_hex = get_hex_color(background);
+    current_background = background;
+    current_foreground = foreground;
 }
 
-void print_center_line(std::string what, const char placeholder) {
+void clear_screen() {
+    if (consoleWidget) {
+        QMetaObject::invokeMethod(consoleWidget, "clear", Qt::QueuedConnection);
+    }
+    set_console_color(4, 0);
+    println("JUAMP - symulator życia");
+    print("Aktualna wersja: ");
+    println(JUAMP_VERSION);
+    set_console_color(7, 0);
+}
+
+void print_center_line(string what, const char placeholder) {
     int width = get_console_width();
     int padding = (width - what.length()) / 2;
     if (padding > 0) {
@@ -59,17 +107,25 @@ void print_center_line(std::string what, const char placeholder) {
     }
 }
 
-void set_console_color(int foreground, int background) {
-    printf("changing color to %i %i not implemented\n", foreground, background);
-    current_foreground = foreground;
-    current_background = background;
-}
+// ------- INPUT -------
 
-string repeat_string(const string& str, int times) {
-    string result;
-    for (int i = 0; i < times; i++) {
-        result += str;
+string read(const string prefix, int rfg, int rbg) {
+    set_console_color(rfg, rbg);
+    print(prefix);
+    
+    if (inputField) {
+        QMetaObject::invokeMethod(inputField, "setEnabled", Qt::QueuedConnection, Q_ARG(bool, true));
+        QMetaObject::invokeMethod(inputField, "setFocus", Qt::QueuedConnection);
     }
+
+    inputMutex.lock();
+    inputReady = false;
+    while(!inputReady) {
+        inputCondition.wait(&inputMutex);
+    }
+    std::string result = lastInput.toStdString();
+    inputMutex.unlock();
+
     return result;
 }
 
@@ -77,42 +133,7 @@ void talk(string who, string what) {
     set_console_color(3, 0);
     print("<" + who + "> ");
     set_console_color(7, 0);
-
-    std::string replacement = "\n" + repeat_string(" ", who.length());
-    std::string result = std::regex_replace(what, std::regex("\n"), replacement);
-    println(result);
-}
-
-// ------- INPUT -------
-
-std::string read(const std::string& prompt, int rfg, int rbg) {
-    bool ok;
-    QString result = QInputDialog::getText(consoleWidget, "Input",
-                                           QString::fromStdString(prompt),
-                                           QLineEdit::Normal, "", &ok);
-    if (!ok) return "";
-    return result.toStdString();
-}
-
-string read(const string prefix, int rfg, int rbg) {
-    int cfg = current_foreground;
-    int cbg = current_background;
-
-    print(prefix);
-    set_console_color(rfg, rbg);
-
-    string readed;
-    std::getline(std::cin, readed);
-
-    set_console_color(cfg, cbg);
-    return readed;
-}
-
-// ------- RANDOM -------
-
-void print_message_box(const std::string& title, const std::string& desc) {
-    QMessageBox::information(consoleWidget, QString::fromStdString(title),
-                             QString::fromStdString(desc));
+    println(what);
 }
 
 void pause_nul() {
@@ -123,25 +144,65 @@ void pause_nul() {
 #endif
 }
 
-void clear_screen() {
-#ifdef _WIN32
-    system("cls");
-#else
-    system("clear");
-#endif
-    set_console_color(4, 0);
-    println("JUAMP - symulator życia");
-    print("Aktualna wersja: ");
-    println(JUAMP_VERSION);
-    set_console_color(7, 0);
+void print_message_box(const std::string& title, const std::string& desc) {
+    QMetaObject::invokeMethod(qApp, [=]() {
+        QMessageBox::information(nullptr, QString::fromStdString(title), QString::fromStdString(desc));
+    }, Qt::QueuedConnection);
 }
 
-// ------- TILING MANAGERS DETECTION -------
+// ------- WINDOW CLASS -------
 
+class JuampWindow : public QWidget {
+public:
+    JuampWindow() {
+        setWindowTitle("JUAMP - Terminal");
+        resize(900, 600);
+        setStyleSheet("background-color: #1e1e1e;");
+
+        QVBoxLayout* layout = new QVBoxLayout(this);
+        
+        consoleWidget = new QTextEdit();
+        consoleWidget->setReadOnly(true);
+        consoleWidget->setStyleSheet(
+            "background-color: #000000; color: #ffffff; "
+            "font-family: 'Monospace', 'Consolas'; font-size: 11pt; "
+            "border: 1px solid #333;"
+        );
+        
+        inputField = new QLineEdit();
+        inputField->setEnabled(false);
+        inputField->setStyleSheet(
+            "background-color: #252526; color: #00ff00; "
+            "font-family: 'Monospace'; font-size: 11pt; "
+            "border: 1px solid #444; padding: 5px;"
+        );
+
+        layout->addWidget(consoleWidget);
+        layout->addWidget(inputField);
+
+        connect(inputField, &QLineEdit::returnPressed, this, [=](){
+            inputMutex.lock();
+            lastInput = inputField->text();
+            
+            QString echo = QString("<span style='color:%1; font-family:monospace;'>%2</span><br>")
+                           .arg(current_fg_hex)
+                           .arg(lastInput.toHtmlEscaped());
+            
+            consoleWidget->insertHtml(echo);
+            
+            inputField->clear();
+            inputField->setEnabled(false);
+            inputReady = true;
+            inputCondition.wakeAll();
+            inputMutex.unlock();
+        });
+    }
+};
+
+// ------- TILING WM  -------
 std::string toLowerCase(const std::string& s) {
     std::string result = s;
-    std::transform(result.begin(), result.end(), result.begin(),
-                   [](unsigned char c){ return std::tolower(c); });
+    std::transform(result.begin(), result.end(), result.begin(), [](unsigned char c){ return std::tolower(c); });
     return result;
 }
 
@@ -182,15 +243,7 @@ int main(int argc, char *argv[]) {
     std::string compositor = getWaylandCompositor();
     std::cout << "Detected compositor: " << compositor << std::endl;
 
-    QWidget window;
-    window.setWindowTitle("JUAMP");
-    window.resize(800, 400);
-
-    QTextEdit console(&window);
-    console.setReadOnly(true);
-    consoleWidget = &console;
-    console.show();
-
+    JuampWindow window;
     window.show();
 
     if (!compositor.empty() && isTilingWayland(compositor)) {
@@ -198,12 +251,17 @@ int main(int argc, char *argv[]) {
     }
 
     std::thread juampThread([](){
+        std::this_thread::sleep_for(std::chrono::milliseconds(300));
         juamp_main();
     });
 
     int ret = app.exec();
 
-    juampThread.join();
+    inputMutex.lock();
+    inputReady = true;
+    inputCondition.wakeAll();
+    inputMutex.unlock();
 
+    if (juampThread.joinable()) juampThread.detach();
     return ret;
 }

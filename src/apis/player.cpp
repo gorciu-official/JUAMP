@@ -21,21 +21,22 @@ Player::Player()
 {}
 
 bool Player::save_player_data() {
-    toml::table save_data{
-        {"sisters", this->sisters},
-        {"brothers", this->brothers},
-        {"was_outside_before", this->was_outside_before},
-        {"was_talking_before", this->was_talking_before},
-        {"has_reputation_before", this->has_reputation_before},
-        {"last_talked_with", this->last_talked_with},
-        {"mum_tokens", this->mum_tokens},
-        {"hunger", this->hunger},
-        {"money", this->money},
-        {"name", this->name},
-        {"city", this->city},
-        {"age", this->age},
-        {"gender", this->gender},
-        {"reputation", this->reputation}
+    return true;
+    toml::table save_data {
+        {"sisters", sisters},
+        {"brothers", brothers},
+        {"was_outside_before", was_outside_before},
+        {"was_talking_before", was_talking_before},
+        {"has_reputation_before", has_reputation_before},
+        {"last_talked_with", last_talked_with},
+        {"mum_tokens", mum_tokens},
+        {"hunger", hunger},
+        {"money", money},
+        {"name", name},
+        {"city", city},
+        {"age", age},
+        {"gender", gender},
+        {"reputation", reputation}
     };
 
 #ifdef _WIN32
@@ -47,9 +48,12 @@ bool Player::save_player_data() {
     system("mkdir -p ~/.local/state/JUAMP/saves");
 #endif
 
-    std::ofstream file(SAVE_FILE);
-    if (!file.is_open()) return false;
+    std::ofstream file(SAVE_FILE, std::ios::trunc);
+    if (!file.is_open())
+        return false;
+
     file << save_data;
-    file.close();
-    return true;
+    file.flush();
+
+    return file.good();
 }

@@ -36,7 +36,7 @@ void handle_home() {
         } else if (readed == "2") {
             handle_home_talking();
         } else if (readed == "E") {
-            return;
+            break;
         } else {
             set_console_color(4, 0);
             println("Niepoprawny numer/znak");

@@ -18,7 +18,7 @@ const string SAVE_LOCATION = "saves/";
 const string SAVE_LOCATION = "~/.local/state/JUAMP/saves/";
 #endif
 string SAVE_FILE = SAVE_LOCATION + DEFAULT_SAVE_NAME + ".toml";
-Player* player;
+Player* player = new Player();
 
 bool load_game() {
     clear_screen();
@@ -38,7 +38,6 @@ bool load_game() {
     system("mkdir -p ~/.local/state/JUAMP");
     system("mkdir -p ~/.local/state/JUAMP/saves");
 #endif
-
     const auto save_file_choice = read("> ");
     SAVE_FILE = SAVE_LOCATION + (save_file_choice == "" ? DEFAULT_SAVE_NAME : save_file_choice) + ".toml";
 
@@ -52,12 +51,14 @@ bool load_game() {
     try {
         save_data = toml::parse(file);
     } catch (const toml::parse_error&) {
-        clear_screen();
+        //clear_screen();
+        println("parse error");
+        sleep_seconds(5);
         return false;
     }
 
-    player->sisters = save_data["player->sisters"].value_or(0);
-    player->brothers = save_data["player.brothers"].value_or(0);
+    player->sisters = save_data["sisters"].value_or(0);
+    player->brothers = save_data["brothers"].value_or(0);
     player->was_outside_before = save_data["was_outside_before"].value_or(player->was_outside_before);
     player->was_talking_before = save_data["was_talking_before"].value_or(player->was_talking_before);
     player->has_reputation_before = save_data["has_reputation_before"].value_or(player->has_reputation_before);

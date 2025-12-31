@@ -36,6 +36,7 @@ useSysTmp = '--notmp' in args
 CC = ["g++" if not '--useClang++' in args else 'clang++']
 if use_gui:
     print("\033[38;5;208m\033[1m[ WARNING ]\033[0m GUI support in JUAMP is experimental")
+    CC.append('-fPIC')
 if '--static' in args or '-s' in args:
     print("\033[38;5;208m\033[1m[ WARNING ]\033[0m Static linking may not work if you do not have specific libraries installed, it is recommended to use dynamic linking (remove --static/-s flag)")
     CC.append('-static')
