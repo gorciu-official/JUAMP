@@ -29,6 +29,7 @@ using std::string;
 class Player {
 public:
     Player();
+    bool save_player_data();
     int sisters;
     int brothers;
     bool was_outside_before;

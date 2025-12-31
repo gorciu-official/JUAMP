@@ -12,39 +12,13 @@
 /* ================================ JUAMP LAUNCHER ================================ */
 
 string DEFAULT_SAVE_NAME = "savegame";
-string SAVE_FILE = "saves/" + DEFAULT_SAVE_NAME + ".toml";
-Player* player;
-
-bool save_game() {
-    toml::table save_data{
-        {"sisters", player->sisters},
-        {"brothers", player->brothers},
-        {"was_outside_before", player->was_outside_before},
-        {"was_talking_before", player->was_talking_before},
-        {"has_reputation_before", player->has_reputation_before},
-        {"last_talked_with", player->last_talked_with},
-        {"mum_tokens", player->mum_tokens},
-        {"hunger", player->hunger},
-        {"money", player->money},
-        {"name", player->name},
-        {"city", player->city},
-        {"age", player->age},
-        {"gender", player->gender},
-        {"reputation", player->reputation}
-    };
-
 #ifdef _WIN32
-    system("if not exist saves mkdir saves");
+const string SAVE_LOCATION = "saves/";
 #else
-    system("mkdir -p saves");
+const string SAVE_LOCATION = "~/.local/state/JUAMP/saves/";
 #endif
-
-    std::ofstream file(SAVE_FILE);
-    if (!file.is_open()) return false;
-    file << save_data;
-    file.close();
-    return true;
-}
+string SAVE_FILE = SAVE_LOCATION + DEFAULT_SAVE_NAME + ".toml";
+Player* player;
 
 bool load_game() {
     clear_screen();
@@ -56,9 +30,17 @@ bool load_game() {
     print_center_line("Jeżeli dopiero zaczynasz, wymyśl nazwę save do nowej gry (może być puste)");
     printnl();
 
-    make_directory("saves");
+#ifdef _WIN32
+    system("if not exist saves mkdir saves");
+#else
+    system("mkdir -p ~/.local");
+    system("mkdir -p ~/.local/state");
+    system("mkdir -p ~/.local/state/JUAMP");
+    system("mkdir -p ~/.local/state/JUAMP/saves");
+#endif
+
     const auto save_file_choice = read("> ");
-    SAVE_FILE = "saves/" + (save_file_choice == "" ? DEFAULT_SAVE_NAME : save_file_choice) + ".toml";
+    SAVE_FILE = SAVE_LOCATION + (save_file_choice == "" ? DEFAULT_SAVE_NAME : save_file_choice) + ".toml";
 
     std::ifstream file(SAVE_FILE);
     if (!file.is_open()) {
@@ -230,6 +212,6 @@ int main() {
 
     handle_home();
     set_console_color(7, 0);
-    while (!save_game()) continue;
+    while (!player->save_player_data()) continue;
     return 0;
 }
