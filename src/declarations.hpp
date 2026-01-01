@@ -91,3 +91,5 @@ extern void handle_work();
 extern void handle_train_station();
 extern void handle_home_talking();
 extern void switch_to_utf8();
+
+extern int execcmd(const string& cmd);

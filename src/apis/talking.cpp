@@ -110,7 +110,7 @@ void handle_home_talking() {
             } else if (task == "2") {
                 talk("Mama", "Sam zobacz.");
                 Sleep(5000);
-                system("curl wttr.in?lang=pl");
+                execcmd("curl wttr.in?lang=pl");
                 continue;
             } else if (task == "3") {
                 break;

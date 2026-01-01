@@ -1,4 +1,5 @@
 // ------- QT IMPORTS -------
+// flatpak vscode does not recognize them properly
 #include <QApplication>
 #include <QWidget>
 #include <QMessageBox>
@@ -10,6 +11,7 @@
 #include <QMetaObject>
 #include <QWaitCondition>
 #include <QMutex>
+#include <QScrollBar>
 
 // ------- C++ STDLIB IMPORTS -------
 #include <string>
@@ -110,6 +112,10 @@ void print_center_line(string what, const char placeholder) {
 // ------- INPUT -------
 
 string read(const string prefix, int rfg, int rbg) {
+    extern void add_one_hunger();
+
+    add_one_hunger();
+
     set_console_color(rfg, rbg);
     print(prefix);
     
@@ -137,11 +143,7 @@ void talk(string who, string what) {
 }
 
 void pause_nul() {
-#ifdef _WIN32
-    system("pause > nul");
-#elif __linux__
-    system("read -s -n 1");
-#endif
+    read("", current_foreground, current_background);
 }
 
 void print_message_box(const std::string& title, const std::string& desc) {

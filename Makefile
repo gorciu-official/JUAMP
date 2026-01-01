@@ -6,3 +6,9 @@ download_toml:
 
 gui:
 	python3 build.py --gui
+
+run:
+	./bin/JUAMP.elf
+
+run_gui:
+	./bin/JUAMP-GUI.elf

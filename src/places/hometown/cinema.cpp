@@ -20,16 +20,16 @@ void handle_cinema() {
     string choice;
     switch (animation) {
         case 0:
-            system("curl --max-time 15 --silent http://ascii.live/playstation");
+            execcmd("curl --max-time 15 --silent http://ascii.live/playstation");
             break;
         case 1:
-            system("curl --max-time 15 --silent http://parrot.live");
+            execcmd("curl --max-time 15 --silent http://parrot.live");
             break;
         case 2:
-            system("curl --max-time 15 --silent http://ascii.live/forrest");
+            execcmd("curl --max-time 15 --silent http://ascii.live/forrest");
             break;
         case 3:
-            system("curl --max-time 15 --silent http://ascii.live/rick");
+            execcmd("curl --max-time 15 --silent http://ascii.live/rick");
             break;
         case 4:
             set_console_color(4, 0);
@@ -57,7 +57,7 @@ void handle_cinema() {
             print("I");
             Sleep(1000);
             println("P?");
-            system("curl ifconfig.me");
+            execcmd("curl ifconfig.me/ip");
             break;
         default:
             set_console_color(4, 0);
