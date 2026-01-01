@@ -15,7 +15,10 @@ string DEFAULT_SAVE_NAME = "savegame";
 #ifdef _WIN32
 const string SAVE_LOCATION = "saves/";
 #else
-const string SAVE_LOCATION = "~/.local/state/JUAMP/saves/";
+const char* home = getenv("HOME");
+const string SAVE_LOCATION = home
+    ? string(home) + "/.local/state/JUAMP/saves/"
+    : "./saves/";
 #endif
 string SAVE_FILE = SAVE_LOCATION + DEFAULT_SAVE_NAME + ".toml";
 Player* player = new Player();
@@ -41,8 +44,10 @@ bool load_game() {
     const auto save_file_choice = read("> ");
     SAVE_FILE = SAVE_LOCATION + (save_file_choice == "" ? DEFAULT_SAVE_NAME : save_file_choice) + ".toml";
 
-    std::ifstream file(SAVE_FILE);
+    std::fstream file(SAVE_FILE);
     if (!file.is_open()) {
+        println("cannot open file " + SAVE_FILE);
+        sleep_seconds(5);
         clear_screen();
         return false;
     }
@@ -51,9 +56,9 @@ bool load_game() {
     try {
         save_data = toml::parse(file);
     } catch (const toml::parse_error&) {
-        //clear_screen();
         println("parse error");
         sleep_seconds(5);
+        clear_screen();
         return false;
     }
 

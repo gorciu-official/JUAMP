@@ -1,5 +1,6 @@
 #include "../declarations.hpp"
 #include "../toml.hpp"
+#include <fstream>
 
 extern string SAVE_FILE;
 
@@ -21,7 +22,6 @@ Player::Player()
 {}
 
 bool Player::save_player_data() {
-    return true;
     toml::table save_data {
         {"sisters", sisters},
         {"brothers", brothers},
@@ -48,9 +48,11 @@ bool Player::save_player_data() {
     system("mkdir -p ~/.local/state/JUAMP/saves");
 #endif
 
-    std::ofstream file(SAVE_FILE, std::ios::trunc);
-    if (!file.is_open())
+    std::fstream file(SAVE_FILE, std::ios::trunc | std::ios::out);
+    if (!file.is_open()) {
+        println(SAVE_FILE + " does not open");
         return false;
+    }
 
     file << save_data;
     file.flush();
