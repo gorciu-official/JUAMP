@@ -20,7 +20,7 @@ Just install `g++` from your distribution's package manager (if needed). Then yo
 
 ### Windows building
 
-DO NOT USE `mingw-32`! IT IS AN ARCHAIC SOFTWARE AND CAUSES PROBLEMS WITH BUILDING JUAMP! Instead, use `mingw-w64` from `winlibs.com`.
+DO NOT USE `mingw-32`! IT IS ARCHAIC SOFTWARE AND CAUSES PROBLEMS WITH BUILDING JUAMP! Instead, use `mingw-w64` from `winlibs.com`.
 
 Here is how to check whether you are using `mingw-32`. Run this command:
 
